@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <title>Teaching</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+ </head>
+  <body>
+    <div class="row">
+      <div class="col-md-12"> <!-- <img src="chem_505.png" class="img-responsive" height="50px"> -->
+	  <h1 style="text-align:center; font-weight: bold">Git Reference and Session Patterns</h1>	  
+	  </div>
+    </div>
+    	
+	
+	<div class="container" style="width:100%;" >
+      <div class="col-md-1"> </div>
+      <div class="col-md-10">
+        <div style="font-size: 12pt; font-family: Times New Roman,Times,serif; text-align: justify">
+		  
+		  <h2>Git Reference</h2>
+		  <p>Below I will summarize the list of most important Git commands. Note that the names put in the <a>hyperlink-format</a> have to be substituted
+		  with the actual names specific to your work.
+		  </p>
+		  
+		  
+ 		  <h3>Working with remotes</h3>
+		  <ol>
+		    <li>
+			  <pre>git clone <a>url_or_path_to_repository-you-copy.git</a></pre>
+			  <p>Clones (copies everything from) another repository, located at <a>url_or_path_to_repository-you-copy.git</a> to your current repository</p>
+			</li>
+			<li>
+			  <pre>git remote add <a>remote-name</a> <a>remote-url</a></pre>
+			  <p>Adds the remote you can pull from and push to. The <a>remote-name</a> will be a short name of the remote, whereas 
+			  <a>remote-url</a> is the actual link to the remote repository (ending with .git)
+			  </p>
+			</li>
+			<li>
+			  <pre>git remote rename <a>old-remote-name</a> <a>new-remote-name</a></pre>
+			  <p>To rename repository </p>
+			</li>
+			<li>
+			  <pre>git remote rm <a>remore-name</a></pre>
+			  <p>To remove repository the remote <a>remore-name</a> from your list of available remotes. This doesn't change the remote repository, of course</p>
+			</li>
+			<li>
+			  <pre>git pull </pre>
+			  <p>takes the latest version of your remote (usually called "origin") master (by default) branch and merges it into you presently chosen
+			  branch.
+			  </p>
+			</li>
+			<li>
+			  <pre>git pull <a>remote-name</a> <a>remote-branch</a></pre>
+			  <p>takes the latest version of the <a>remote-branch</a> branch on the remote repository <a>remote-name</a> and merges it into you presently chosen
+			  branch.
+			  </p>
+			</li>			
+			<li>
+			  <pre>git push </pre>
+			  <pre>git push <a>remote-name</a> <a>remote-branch</a></pre>
+			  <p>Same as "git pull" and its version, only you send your code back - from your local repositry to the remote (called upstream repository)
+			  </p>
+			</li>
+			
+		  </ol>
+
+		  
+		  <h3>Development commands</h3>
+		  <ol>
+		  
+			<li>
+			  <pre>git init</pre>
+			  <p>Creates a new, empty repository</p>
+			</li>
+			
+			<li>
+			  <pre>git add <a>files-or-directories</a></pre>
+			  <p>This will add the <a>files-or-directories</a> to the so-called "staging" area (think of active space in excited dynamics) - something
+			  you are working with at the moment.</p>
+			</li>
+			<li>
+			  <pre>git commit -m "Some-message"</pre>
+			  <p>This will commit the files in the "staging" area to the development history of the code - this way you save the most valuable
+			  and recent state of the project. The message should be informative and must describe clearly what changes have you made in the present
+			  version w.r.t. the older state of the code.</p>			 
+			</li>
+			<li>
+			  <pre>git branch <a>branch-name</a></pre>
+			  <p>Will create a new branch called <a>branch-name</a>. The present repository in its present state will be copied into the new branch.</p>
+			</li>
+			<li>
+			  <pre>git checkout <a>branch-name</a></pre>
+			  <p>Switch into the <a>branch-name</a> branch. You will see a corresponding set of files. The uncommited changes in the branch from which
+			  you are switching will be forgotten (i think)</p>
+			</li>			
+			<li>
+			  <pre>git merge <a>branch-name</a></pre>
+			  <p>Will delete the branch called <a>branch-name</a> into the branch where you presently are.</p>
+			</li>
+			<li>
+			  <pre>git branch -d <a>branch-name</a></pre>
+			  <p>Will delete the branch called <a>branch-name</a>.</p>
+			</li>
+		  </ol>
+		  
+		  <h3>Info commands</h3>
+		  <ol>
+			<li>
+			  <pre>git status</pre>
+			  <p>shows the current state of your project</p>
+			</li>
+			<li>
+			  <pre>git log</pre>
+			  <p>shows the history of all commits </p>			 
+			</li>
+			<li>
+			  <pre>git log --graph --pretty=format:'%C(magenta)%h%C(blue)%d%Creset %s %C(blue bold)- %an, %ar%Creset'</pre>
+			  <p>shows the history of all commits and the development tree, highlights the sections</p>
+			</li>
+			<li>
+			  <pre>git diff</pre>
+			  <p>shows changes in the present state made w.r.t. the latest commit</p>
+			</li>			
+			<li>
+			  <pre>git branch</pre>
+			  <p>shows the list of available branches</p>
+			</li>						
+			<li>
+			  <pre>git remote -v</pre>
+			  <p>shows the list of available remote repositories</p>
+			</li>						
+		  </ol>
+		  
+		  <br><br>
+		  <h2>Git utilization patterns</h2>
+		  <p>Below, I will show some typical sessions with git, I had so far. I may be using specific names for the repositories - but you'll have
+		  to adapt them to your specifics, of course
+		  </p>
+		  <h3>Typicall coding session</h3>
+		  <ol>
+			<li><p>work on the file "main.cpp"</p></li>
+			<li><pre>git add main.cpp<pre></li>
+			<li><p>work on several files in the "src" directory of my project</p></li>
+			<li><pre>git add src/</pre></li>
+			<li><pre>git commit -m "Added new features in the main program and some documentation in other source files"</pre></li>
+		  </ol>
+		  
+		  
+		  
+		</div>
+      </div>  <!-- col-md-10 -->
+      <div class="col-md-1"> </div>
+    </div>
+	    
+	
+  </body>
+</html>		  
