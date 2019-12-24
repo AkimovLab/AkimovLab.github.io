@@ -52,34 +52,89 @@
 
 
 <xmp theme="bootstrap"> 
-# 4.1. SLURM
- Start your SLURM (submit) scripts with the following header:
+# 3.1. Running Gaussian on CCR
+
+## A. General info
+
+GAUSSIAN 16 is available for use on the faculty clusters. 
+Here is a link to what is new:  [http://gaussian.com/g16new/](http://gaussian.com/g16new/)
+
+GAUSSIAN 16 is installed in /util/academic/gaussian/g16.A03.  
+There are binaries for several extensions to the x86 instruction set architecture.
+
+    [cdc@rush:/util/academic/gaussian/g16.A03]$ ls
+    gaussian.slurm  modules  x86-64-AVX  x86-64-AVX2  x86-64-Legacy  x86-64-SSE4_2
+
+There is a module for each set of binaries.  
+
+    [cdc@rush:/util/academic/gaussian/g16.A03]$ ls modules/
+
+    g16  g16.A03-AVX2.lua  g16.A03-AVX.lua  g16.A03-Legacy.lua  g16.A03-SSE4_2.lua
+
+
+The g16 module determines the most recent extension available on the compute node and loads the appropriate module.
+
+See the SLURM script gaussian.slurm for an example of running a computation with GAUSSIAN 16. 
+
+Here is an example to run on our cluster: 
 
     #!/bin/sh
-    #SBATCH --partition=valhalla
-    #SBATCH --clusters=chemistry
-    #SBATCH --time=20:00:00
+    #SBATCH --cluster=faculty
+    #SBATCH --partition=valhalla --qos=valhalla
+    #SBATCH --time=00:20:00
     #SBATCH --nodes=1
-    #SBATCH --ntasks-per-node=1
-    #SBATCH --mem=1500
-    #SBATCH --mail-user=???@buffalo.edu
-
-    echo "SLURM_JOBID="$SLURM_JOBID
-    echo "SLURM_JOB_NODELIST="$SLURM_JOB_NODELIST
-    echo "SLURM_NNODES="$SLURM_NNODES
+    #SBATCH --ntasks-per-node=12
+    ###SBATCH --exclusive
+    #SBATCH --job-name="test"
+    #SBATCH --output=slurm-test.out
+    ###SBATCH --mail-user=alexeyak@buffalo.edu
+    ###SBATCH --mail-type=ALL
+    
+    echo "working directory = "$SLURM_SUBMIT_DIR
     echo "SLURMTMPDIR="$SLURMTMPDIR
-    echo "working directory="$SLURM_SUBMIT_DIR
+    
+    ulimit -s unlimited
+    
+    module use /util/academic/gaussian/g16.A03/modules
+    module load g16
+    module list
+    
+    echo "g16root="$g16root
+    echo "Default location for GAUSS_SCRDIR="$GAUSS_SCRDIR
+    echo "Changing $GAUSS_SCRDIR to $SLURMTMPDIR"
+    export GAUSS_SCRDIR=$SLURMTMPDIR
+    echo "GAUSS_SCRDIR="$GAUSS_SCRDIR
+    #
+    echo "Sourcing the g16.profile"
+    . $g16root/g16/bsd/g16.profile
+    echo "G16 variables from sourcing"
+    export | grep -i g16
+    which g16
+    
+    echo "Launch GAUSSIAN"
+    time g16 < test.inp >& test.out
+    #
+    echo "All Done!"
 
-    NPROCS=`srun --nodes=${SLURM_NNODES} bash -c 'hostname' |wc -l`
-    echo NPROCS=$NPROCS
+GAUSSIAN 16 is not available in WebMO.  We are waiting to the developer to release an update that supports GAUSSIAN 16.
 
- This will allow your computations to be run on the group's dedicated nodes ("valhalla" partition)
+## B. Input Examples
 
- <span style="color:red">Replace ??? with your UB ID</span>, so that ???@buffalo.edu is your valid email address
- Adjust all other parameters of the job as needed
+### B.1. Single point calculations of water molecule at the Hartree-Fock level
+
+    %Chk=heavy                   
+    # HF/6-31G(d)
+    
+    water
+    
+    0   1
+    O  -0.464   0.177   0.0
+    H  -0.464   1.137   0.0
+    H   0.441  -0.143   0.0
 
 
 </xmp>
+
 
   <script type="text/javascript" src="https://cdn.rawgit.com/Naereen/StrapDown.js/master/strapdown.min.js"></script>
   </body>

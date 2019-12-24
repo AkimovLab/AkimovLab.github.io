@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+  <head>
+    <title>The Akimov Research Group</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119266503-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-119266503-1');
+    </script>
+
+  </head>
+
+
+  <body>    
+    <!-- Navigation bar  style="margin-top:-2px;" -->
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="../research.html">Research</a></li>
+        <li class="nav-item"><a class="nav-link" href="../publications.html">Publications</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Group</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="../group.html">Present</a>
+            <a class="dropdown-item" href="../group_alumni.html">Former Members and Visitors</a>
+          </div>
+        </li>        
+        <li class="nav-item"><a class="nav-link" href="../teaching.html">Teaching</a></li>
+        <li class="nav-item"><a class="nav-link" href="../outreach.html">Outreach</a></li>
+        <li class="nav-item active"><a class="nav-link" href="../soft_and_tuts.html">Software &amp; Tutorials</a></li>
+        <li class="nav-item"><a class="nav-link" href="../gallery.html">Gallery</a></li>
+        <li class="nav-item"><a class="nav-link" href="../contact.html">Contact</a></li>
+        <li><a href="https://twitter.com/AkimovLab" class="twitter-follow-button" data-show-count="false" data-lang="en-gb">Follow @AkimovLab</a>
+          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+            if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        </li>
+      </ul>
+    </nav>
+
+
+<xmp theme="bootstrap"> 
+# 4.1. SLURM
+
+ To run calculation on the CCR cluster, we use the job scheduler system called SLURM. 
+
+ Basically, slurm scripts define how exacly you want the calculations to be run on the cluster.
+ Note, this is NOT about WHAT calculations to run and how to setup the input for problem-specific 
+ inputs.
+
+ Of interest to SLURM scripts are the properties such as: for how long to run the calculations, 
+ on how many nodes, in which sub-clusters to run them, and so on.
+ 
+ Most SLURM scripts go like this:
+
+    #!/bin/sh
+    #SBATCH --cluster=faculty
+    #SBATCH --partition=valhalla --qos=valhalla
+    #SBATCH --job-name="test"
+    ###SBATCH --output=slurm-test.out
+    #SBATCH --time=00:10:00
+    #SBATCH --nodes=1
+    #SBATCH --ntasks-per-node=1
+    #SBATCH --mem=1500
+    ###SBATCH --mail-user=???@buffalo.edu
+
+    echo "SLURM_JOBID="$SLURM_JOBID
+    echo "SLURM_JOB_NODELIST="$SLURM_JOB_NODELIST
+    echo "SLURM_NNODES="$SLURM_NNODES
+    echo "SLURMTMPDIR="$SLURMTMPDIR
+    echo "working directory="$SLURM_SUBMIT_DIR
+
+    NPROCS=`srun --nodes=${SLURM_NNODES} bash -c 'hostname' |wc -l`
+    echo NPROCS=$NPROCS
+
+
+ **Explanation**:
+
+ * ``#SBATCH --cluster=faculty`` : on which cluster to run the calculations, don't need to change
+
+ * ``#SBATCH --partition=valhalla --qos=valhalla`` : on which partition (sub-cluster) to run the calculations
+    This particular instruction requests to use our group's dedicated cluster/partition ("valhalla"). As a member
+    of the group, you get a priority in running jobs on this cluster, unless other group members are fully using it.
+    
+    For other options in regard of which partitions to use and what are their limitations, refer
+    to [here](http://www.buffalo.edu/ccr/support/research_facilities/general_compute/cluster-partitions.html)
+
+    In particular, it is recommended to use ``--partition=skylake`` since those are relatively new (as of Dec. 2019)
+    nodes and there are many of them. 
+
+ * ``#SBATCH --job-name="test"`` : the name of the job you are running - for ease of finding it in the queue, but really 
+    doesn't matter too much for any other purposes. You can keep it unchanged for all the jobs you submit.
+
+ * ``###SBATCH --output=slurm-test.out``: the name of the file, where the ourput of the SLURM operations (and the stdout of)
+    the programs and scripts executed by the slurm files will be printed out. This file is usually not that much useful, 
+    maingly for some debug purposes (e.g. if the job crashes, it may contain the error messages that can be very useful for
+    fixing the problems). 
+ 
+    Note how there are 3 hash-tag characters instead of only one. This is to comment out the line of a SLURM script and make it
+    inactive. In this case, the SLURM output file will be named after the job ID, so that if you submit several jobs from the same
+    directory (try avoid doing that though), you can have distinct SLURM output files.
+
+ * ``#SBATCH --time=00:10:00`` : how long do you think the job will take to comple? Format: hh:mm:ss
+
+ * ``#SBATCH --nodes=1`` : on how many nodes to run the job
+
+ * ``#SBATCH --ntasks-per-node=12`` : how many cores per node to use for the job
+
+ * ``#SBATCH --mem=1500`` : how much memory to reserve for the job, in Mb
+
+ *  All the 4 parameters above: the job time, the number of nodes and cores as well as the amount of memory requested
+    can affect the job priority - the more resources you request, the longer the job may be sitting in a queue
+    before being actually executed. 
+
+    If you request too much of resorces (exceeding limits or bare availability), the job will not be run and will be dropped.
+
+    If your job exceeds any of the resources requested (usually the run time or memory) at any time of execution, it will be
+    killed. 
+
+    So it is highly recommended to use some good judgement and preliminary testing to find the right balance.
+
+ * ``###SBATCH --mail-user=???@buffalo.edu`` : you can set up the emails related to this job to be sent to you email (e.g. 
+   can't wait to see the results). But, of course, I prefer this option to be commented out (or you can remove it alltogether) so
+   not to get too many of them (can be bothering after a while).
+
+ The rest of the script contains a set of instruction of how to setup the actual calculations and how to run them. 
+
+ In this particular example, the actual "calculations" look like ``echo NPROCS=$NPROCS`` which simply print out some current 
+ environmental variables.
+
+
+ Finally, to run the calculation (to "submit a job") do the following:
+
+    sbatch submit.slurm
+
+ Here, we assume the SLURM script shown above is saved in the file *submit.slurm* (it doesn't matter how the file is called and what is 
+ it's extension name)
+
+
+ To learn about the status of your (and others') jobs, do the following:
+
+    squeue -M faculty -p valhalla
+
+ In this example, we are interested in what is going on in our *valhalla* partition
+
+</xmp>
+
+  <script type="text/javascript" src="https://cdn.rawgit.com/Naereen/StrapDown.js/master/strapdown.min.js"></script>
+  </body>
+</html>
