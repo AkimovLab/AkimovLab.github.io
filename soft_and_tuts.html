@@ -20,22 +20,6 @@
       gtag('config', 'UA-119266503-1');
     </script>
 
-    <style>
-    div.moved {
-      position: relative;
-      bottom: 25px;
-    }
-
-    body.my_style {
-      text-align: justify;
-      font-family: "Times New Roman", Times, serif;
-      font-size: 14pt;
-      line-height: 1.8;
-      word-spacing: 2px;
-    }
-    </style>
-
-
   </head>
 
 
@@ -73,7 +57,7 @@
 
 
        
-<xmp theme="bootstrap"> 
+<xmp theme="bootstrap-responsive"> 
 
 # Software and Tutorials
 
@@ -104,82 +88,17 @@
 
 
 ## 3. Packages we use 
-
+  To be added
 
 
 ## 4. Center for Computational Research (CCR) at UB
 
-### 4.1. SLURM:
+ 4.1. [SLURM](soft_and_tuts/1-slurm.html)
 
-
- Start your SLURM (submit) scripts with the following header:
-
-    #!/bin/sh
-    #SBATCH --partition=valhalla
-    #SBATCH --clusters=chemistry
-    #SBATCH --time=20:00:00
-    #SBATCH --nodes=1
-    #SBATCH --ntasks-per-node=1
-    #SBATCH --mem=1500
-    #SBATCH --mail-user=???@buffalo.edu
-
-    echo "SLURM_JOBID="$SLURM_JOBID
-    echo "SLURM_JOB_NODELIST="$SLURM_JOB_NODELIST
-    echo "SLURM_NNODES="$SLURM_NNODES
-    echo "SLURMTMPDIR="$SLURMTMPDIR
-    echo "working directory="$SLURM_SUBMIT_DIR
-
-    NPROCS=`srun --nodes=${SLURM_NNODES} bash -c 'hostname' |wc -l`
-    echo NPROCS=$NPROCS
-
- This will allow your computations to be run on the group's dedicated nodes ("valhalla" partition)
-
- <span style="color:red">Replace ??? with your UB ID</span>, so that ???@buffalo.edu is your valid email address
- Adjust all other parameters of the job as needed
-
-
-### 4.2. [Anaconda environments](soft_and_tuts/anaconda_envs.md):
-
-
-
- Anaconda Python 3.7 for VIDIA has been loaded. Python Quantum Chemistry packages have been installed into conda
- environments. Initialize the conda environment, list the available environments and activate the one that you want to use as
- follows:
-
-    module load vidia/libra
-    eval "$(/util/academic/vidia/quantum-chemistry/2019Fall/py37/anaconda-2019.10/bin/conda shell.bash hook)"
-    conda info --envs
-    conda activate environment-name
-
- Replace ``environment-name`` with the actual name of one of the available environments:
-  
- Conda environments:
-
-   * base /util/academic/vidia/quantum-chemistry/2019Fall/py37/anaconda-2019.10
-
-   * libra-py3dmol /util/academic/vidia/quantum-chemistry/2019Fall/py37/anaconda-2019.10/envs/libra-py3dmol
-
-   * psi4 /util/academic/vidia/quantum-chemistry/2019Fall/py37/anaconda-2019.10/envs/psi4
-
-   * pyglet /util/academic/vidia/quantum-chemistry/2019Fall/py37/anaconda-2019.10/envs/pyglet
-
-   * pyquante2 /util/academic/vidia/quantum-chemistry/2019Fall/py37/anaconda-2019.10/envs/pyquante2
-
-   * pyscf /util/academic/vidia/quantum-chemistry/2019Fall/py37/anaconda-2019.10/envs/pyscf
-
-   * qmflows /util/academic/vidia/quantum-chemistry/2019Fall/py37/anaconda-2019.10/envs/qmflows
-
-
- Example:
-
-    (base) [cdc@vortex1:~]$ conda activate libra-py3dmol
-    (libra-py3dmol) [cdc@vortex1:~]$ echo $LD_LIBRARY_PATH
-    /util/academic/vidia/quantum-chemistry/2019Fall/py37/anaconda-2019.10/lib:/util/academic/vidia/quantum-chemistry/2019Fall/py37
-    /Libra/libra-code/build/src
-
+ 4.2. [Anaconda environments](soft_and_tuts/2-anaconda_envs.html)
 
 ## 5. Useful links 
-
+  To be added
 
 </xmp>
 
