@@ -75,6 +75,30 @@ Using the Workspace and "submit" tools, you can send your more time-consuming jo
 installed there, see [here](4.2-anaconda_envs.html) for more details of what is available, and [here](4.1-slurm.html) on how to 
 use the SLURM system
 
+To use Libra (in Jupyter):
+
+    %use libra-4.4.0
+
+
+To use pyscf (in Jupyter): 
+
+    %use libra-pyscf
+
+
+To use SHARC (in Jupyter):
+
+    %use sharc-2.1.1
+
+The use script sets the $SHARC environment variable. 
+
+
+To use DFTB+ (in Workspace):
+
+    source /etc/environ.sh
+    use libra-4.4.0
+    use dftbplus-19.1
+
+
 ____
 
 
