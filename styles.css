@@ -1,0 +1,17 @@
+.navbar {
+  font-size:16pt; 
+  font-family: ‘Calibri’;
+}
+
+.container {
+  font-size:12pt; 
+  font-family: ‘Calibri’;
+  text-align: justify;
+}
+
+xmp {
+  theme:"bootstrap-responsive";
+  font-size:12pt; 
+  font-family: ‘Calibri’;
+  text-align: justify;
+}
