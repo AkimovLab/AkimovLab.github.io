@@ -153,6 +153,14 @@
 
     squeue -M faculty -p valhalla
 
+ To show the process for a given user (alexeyak, in my case), do this:
+
+    squeue -M faculty -u alexeyak
+
+ To show the results of the squeue command every second, do this: 
+
+    watch -n 1 squeue -M faculty -p valhalla
+
  In this example, we are interested in what is going on in our *valhalla* partition
 
 </xmp>
