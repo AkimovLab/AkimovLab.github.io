@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+  <head>
+    <title>The Akimov Research Group</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119266503-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-119266503-1');
+    </script>
+
+  </head>
+
+
+  <body>    
+    <!-- Navigation bar  style="margin-top:-2px;" -->
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="../research.html">Research</a></li>
+        <li class="nav-item"><a class="nav-link" href="../publications.html">Publications</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Group</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="../group.html">Present</a>
+            <a class="dropdown-item" href="../group_alumni.html">Former Members and Visitors</a>
+          </div>
+        </li>        
+        <li class="nav-item"><a class="nav-link" href="../teaching.html">Teaching</a></li>
+        <li class="nav-item"><a class="nav-link" href="../outreach.html">Outreach</a></li>
+        <li class="nav-item active"><a class="nav-link" href="../soft_and_tuts.html">Software &amp; Tutorials</a></li>
+        <li class="nav-item"><a class="nav-link" href="../gallery.html">Gallery</a></li>
+        <li class="nav-item"><a class="nav-link" href="../contact.html">Contact</a></li>
+        <li><a href="https://twitter.com/AkimovLab" class="twitter-follow-button" data-show-count="false" data-lang="en-gb">Follow @AkimovLab</a>
+          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+            if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        </li>
+      </ul>
+    </nav>
+
+
+<xmp theme="bootstrap"> 
+# 3.3. DFTB+ on UB CCR
+
+[DFTB+](https://dftbplus.org/) is a fast and efficient versatile quantum mechanical simulation software package. Using DFTB+ you can carry out quantum mechanical simulations similar to density functional theory but in an approximate way, typically gaining around two orders of magnitude in speed.
+ 
+## A. Installation
+
+To install DFTB+, we use the instruction in [here](https://github.com/dftbplus/dftbplus/blob/main/INSTALL.rst) and a recipe for installing it on UB CCR is provided below:
+
+    
+    module load foss
+    module load arpack-ng
+    module load cmake
+    cd /projects/academic/cyberwksp21/SOFTWARE_NEW_ENV/dftb+/dftbplus-23.1 # where you downloaded or cloned the DFTB+ code
+    FC=gfortran CC=gcc cmake -DWITH_ARPACK=Y -DCMAKE_INSTALL_PREFIX=/projects/academic/cyberwksp21/SOFTWARE_NEW_ENV/dftb+/dftbplus-23.1/install -B _build .
+    cmake --build _build -- -j
+    ./utils/get_opt_externals ALL
+    cmake --install _build
+
+After compilation is finished, create a module file in the modules directory (`/projects/academic/cyberwksp21/MODULES`) with the following content:
+
+```
+whatis("Description: DFTB+")
+whatis("Version: 23.1")
+whatis("Category: Chem")
+load("ccrsoft/2023.01")
+load("foss/2021b")
+load("arpack-ng/3.8.0")
+prepend_path("PATH","/projects/academic/cyberwksp21/SOFTWARE_NEW_ENV/dftb+/dftbplus-23.1/install/bin")
+prepend_path("LD_LIBRARY_PATH","/cvmfs/soft.ccr.buffalo.edu/versions/2023.01/easybuild/software/avx512/MPI/gcc/11.2.0/openmpi/4.1.1/arpack-ng/3.8.0/lib")
+prepend_path("LD_LIBRARY_PATH","/cvmfs/soft.ccr.buffalo.edu/versions/2023.01/easybuild/software/avx512/Compiler/gcc/11.2.0/flexiblas/3.0.4/lib")
+prepend_path("LD_LIBRARY_PATH","/cvmfs/soft.ccr.buffalo.edu/versions/2023.01/easybuild/software/Core/gcccore/11.2.0/lib64")
+add_property("type_","chem")
+```
+
+## B. Running DFTB+
+
+See the following example of running a computation with DFTB+.
+
+Here is an example to run on our cluster: 
+
+    #!/bin/sh
+    #SBATCH --partition=general-compute  --qos=general-compute
+    #SBATCH --clusters=ub-hpc
+    #SBATCH --nodes=1
+    #SBATCH --ntasks-per-node=6
+    #SBATCH --cpus-per-task=1
+    #SBATCH --time=00:10:00
+    #SMATCH --mem=10000
+    ###SBATCH -C CPU-E5-2650v4 # This is the type of CPUs on valhalla nodes
+    #SBATCH -C CPU-Gold-6130 # The head node CPU type for not getting warnings or errors
+
+    module use /projects/academic/cyberwksp21/MODULES
+    module load dftb+/v23
+    dftb+ > out
+
+    
+## C. Input Example
+
+### C.1. Single point/molecular dynamics calculations of C60 fullerene.
+
+```
+Geometry = xyzFormat {
+<<< "c60.xyz"
+}
+# For molecular dynamics
+#Driver = VelocityVerlet{
+#  TimeStep [fs] = 1.0
+#  Thermostat = NoseHoover {
+#    Temperature [Kelvin] = 300
+#    CouplingStrength [cm^-1] = 1374
+#  }  
+#  Steps = 5000
+#  MovedAtoms = 1:-1
+#  MDRestartFrequency = 1
+#}
+
+
+Hamiltonian = DFTB {
+  SCC = Yes
+  Charge = 0
+  SCCTolerance = 1e-6
+  SlaterKosterFiles = Type2FileNames {
+    Prefix = "mio-1-1/"
+    Separator = "-"
+    Suffix = ".skf"
+  }
+  MaxAngularMomentum = {
+    C = "p"
+  }
+  #ReadInitialCharges = Yes
+  Dispersion = LennardJones {
+    Parameters = UFFParameters{}
+  }
+}
+
+
+Options = {
+#  WriteAutotestTag = Yes
+#  WriteHS = Yes
+}
+
+Analysis = {
+WriteEigenvectors = Yes
+#WriteEigenvectorsAsTxt = Yes
+}
+
+ParserOptions = {
+  ParserVersion = 4
+}
+```
+
+</xmp>
+
+
+  <script type="text/javascript" src="https://cdn.rawgit.com/Naereen/StrapDown.js/master/strapdown.min.js"></script>
+  </body>
+</html>
