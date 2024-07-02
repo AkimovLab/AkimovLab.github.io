@@ -52,86 +52,54 @@
 
 
 <xmp theme="bootstrap"> 
-# 3.1. Running Gaussian on CCR
+# 3.4. Libra code on UB CCR
 
-## A. General info
+[Libra code](https://github.com/Quantum-Dynamics-Hub/libra-code) is a modular methodology prototyping library for quantum dynamics, written in C++ and Python. Libra enables quantum–classical dynamics calculations with model and atomistic Hamiltonians. Libra boasts a comprehensive set of trajectory surface hopping methods and algorithms for nonadiabatic dynamics. 
 
-GAUSSIAN 16 is available for use on the faculty clusters. 
-Here is a link to what is new:  [http://gaussian.com/g16new/](http://gaussian.com/g16new/)
+## A. Using Libra
 
-GAUSSIAN 16 is installed in /util/academic/gaussian/g16.A03.  
-There are binaries for several extensions to the x86 instruction set architecture.
-
-    [cdc@rush:/util/academic/gaussian/g16.A03]$ ls
-    gaussian.slurm  modules  x86-64-AVX  x86-64-AVX2  x86-64-Legacy  x86-64-SSE4_2
-
-There is a module for each set of binaries.  
-
-    [cdc@rush:/util/academic/gaussian/g16.A03]$ ls modules/
-
-    g16  g16.A03-AVX2.lua  g16.A03-AVX.lua  g16.A03-Legacy.lua  g16.A03-SSE4_2.lua
+To install Libra, we use the instruction in [here](https://github.com/Quantum-Dynamics-Hub/libra-code). It is already installed on CCR and in order to load it, one needs to follow these steps:
 
 
-The g16 module determines the most recent extension available on the compute node and loads the appropriate module.
+```
+module use /projects/academic/cyberwksp21/MODULES
+module load libra/v5.5.0 # Other versions are also available: v5.3.0 and the devel branch of the code in github repository.
+```
 
-See the SLURM script gaussian.slurm for an example of running a computation with GAUSSIAN 16. 
+Using the above command it will load the `libra` environment and one can test the loading by:
 
-Here is an example to run on our cluster: 
+```
+python -c "from liblibra_core import *"
+```
 
-    #!/bin/sh
-    #SBATCH --cluster=faculty
-    #SBATCH --partition=valhalla --qos=valhalla
-    #SBATCH --time=00:20:00
-    #SBATCH --nodes=1
-    #SBATCH --ntasks-per-node=12
-    ###SBATCH --exclusive
-    #SBATCH --job-name="test"
-    #SBATCH --output=slurm-test.out
-    ###SBATCH --mail-user=alexeyak@buffalo.edu
-    ###SBATCH --mail-type=ALL
-    
-    echo "working directory = "$SLURM_SUBMIT_DIR
-    echo "SLURMTMPDIR="$SLURMTMPDIR
-    
-    ulimit -s unlimited
-    
-    module use /util/academic/gaussian/g16.A03/modules
-    module load g16
-    module list
-    
-    echo "g16root="$g16root
-    echo "Default location for GAUSS_SCRDIR="$GAUSS_SCRDIR
-    echo "Changing $GAUSS_SCRDIR to $SLURMTMPDIR"
-    export GAUSS_SCRDIR=$SLURMTMPDIR
-    echo "GAUSS_SCRDIR="$GAUSS_SCRDIR
-    #
-    echo "Sourcing the g16.profile"
-    . $g16root/g16/bsd/g16.profile
-    echo "G16 variables from sourcing"
-    export | grep -i g16
-    which g16
-    
-    echo "Launch GAUSSIAN"
-    time g16 < test.inp >& test.out
-    #
-    echo "All Done!"
+## B. Using on Jupyter notebook
 
-GAUSSIAN 16 is not available in WebMO.  We are waiting to the developer to release an update that supports GAUSSIAN 16.
+In order to use it on Jupyter notebook, you need to follow these steps:
 
-## B. Input Examples
+You first need to install Jupyter notebook manually on your terminal. This is a one time setup and you don't need to do this anymore you want to use Jupyter on CCR.
 
-### B.1. Single point calculations of water molecule at the Hartree-Fock level
+```
+module use /projects/academic/cyberwksp21/MODULES
+module load libra
+pip install jupyterlab
+```
 
-    %Chk=heavy                   
-    # HF/6-31G(d)
-    
-    water
-    
-    0   1
-    O  -0.464   0.177   0.0
-    H  -0.464   1.137   0.0
-    H   0.441  -0.143   0.0
+Then, create your own kernel by:
 
+```
+python -m ipykernel install --user --name=libra_kernel
+```
+
+Since the Jupyter lab on CCR resets every module before running the Jupyter notebook interface, you need to properly specify the `PYTHONPATH` and `LD_LIBRARY_PATH` variables to the `_build/src` directory for each version of libra installed in your `~/.bashrc` file as follows (e.g. v5.5.0):
+
+```
+export PYTHONPATH=/projects/academic/cyberwksp21/SOFTWARE_NEW_ENV/libra/v5.5.0/_build/src:$PYTHONPATH
+export LD_LIBRARY_PATH=/projects/academic/cyberwksp21/SOFTWARE_NEW_ENV/libra/v5.5.0/_build/src:$LD_LIBRARY_PATH
+```
+
+Then, from OnDemand, load a JupyterLab job and after jupyter is run, select the `libra_kernel` whenever you want to run a calculations that requires Libra's modules.
+
+**Note:** This only works with Jupyter Lab (legacy) version for now and will not be working by June 2024.
 
 </xmp>
 
