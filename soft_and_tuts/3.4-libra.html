@@ -101,6 +101,54 @@ Then, from OnDemand, load a JupyterLab job and after jupyter is run, select the 
 
 **Note:** This only works with Jupyter Lab (legacy) version for now and will not be working by June 2024.
 
+
+### C. Update from 12/04/2024 (based on Mohammad's notes)
+
+To use the new version (5.8.1 and later) of Libra, with the updated CMakeLists.txt file on CCR, load the module:
+```
+module load libra/devel2
+```
+
+There is no conda environment loaded and it uses the CCR precompiled modules except for boost (with version 1.80.0).
+The old one uses the conda environment using:
+
+```
+module load libra/devel
+```
+
+To use the new Libra build in Jupyter notebook, make sure that you correctly give the paths in your `~/.bashrc` file (just adding a 3 to `_build` suffices), e.g.:
+
+```
+export PYTHONPATH=/projects/academic/cyberwksp21/SOFTWARE_NEW_ENV/libra/devel/_build3/src:$PYTHONPATH
+export LD_LIBRARY_PATH=/projects/academic/cyberwksp21/SOFTWARE_NEW_ENV/libra/devel/_build3/src:$LD_LIBRARY_PATH
+```
+
+**Just for those who want to compile their own fork of the code**
+
+No changes to CMakeLists.txt is required. Just need to do this:
+
+1. Load the module and cd to the `_build` folder
+
+```
+module load libra/devel2 # To load all the dependencies and libraries and boost
+cd /path/to/your/libra-code/and/then/to/_build
+```
+
+2. Make sure the _build directory path is empty
+
+3. Then build as usual:
+````
+cmake ../ # No worries about the warnings, that's the best I could deliver today and the compilation is unaffected and the liblibra_core is imported
+make -j8
+```
+
+After the compilation is done, make sure you have correctly recompiled it by doing this:
+```
+module purge
+cd /path/to/your/libra-code/and/then/to/_build/src
+python -c "from liblibra_core import *"
+```
+
 </xmp>
 
 
