@@ -52,150 +52,919 @@
 
 
 <xmp theme="bootstrap"> 
-# 3.1. CP2K on UB CCR
+# 3.1. CP2K on UB CCR (By Mohammad Shakiba; ca. 06/01/2026)
 
-[CP2K](https://www.cp2k.org/) is a quantum chemistry and solid state physics software package that can perform atomistic simulations of solid state, liquid, molecular, periodic, material, crystal, and biological systems. CP2K provides a general framework for different modeling methods such as DFT using the mixed Gaussian and plane waves approaches GPW and GAPW. Supported theory levels include DFTB, LDA, GGA, MP2, RPA, semi-empirical methods (AM1, PM3, PM6, RM1, MNDO, …), and classical force fields (AMBER, CHARMM, …). CP2K can do simulations of molecular dynamics, metadynamics, Monte Carlo, Ehrenfest dynamics, vibrational analysis, core level spectroscopy, energy minimization, and transition state optimization using NEB or dimer method. (Detailed overview of features.)
+# Installing CP2K on UB CCR 
 
-## A. Installation
+This README documents a working CP2K installation workflow on the University at Buffalo Center for Computational Research (UB CCR). It is based on an installation performed under:
 
-
-To install CP2K, we use the instruction in [here](https://github.com/cp2k/cp2k/blob/master/INSTALL.md) and a recipe for installing it on UB CCR using GNU compilers is provided below. For compilation using Intel compiler see [this link](https://github.com/compchem-cybertraining/Tutorials_CP2K/blob/master/INSTALLATION.md).
-
-    git clone --recursive -b support/v2024.1 https://github.com/cp2k/cp2k.git cp2k
-    cd cp2k/tools/toolchain
-    module load gcc/11.2.0
-    module load openmpi/4.1.1
-    module load imkl/2022.0.1
-    module load cmake/3.22.1
-    ./install_cp2k_toolchain.sh --with-gcc=system --with-mkl=system --with-cmake=system --with-sirius=no --with-openmpi=system
-
-In order to see more options you can type `./install_cp2k_toolchain.sh --help`. Then, the toolchain will download and install the necessary files and create arch files in the install directory. Copy and paste the arch files to the `cp2k/arch` directory by:
-
-
-```
-cp install/arch/local* ../../arch/.
+```bash
+/vscratch/grp-alexeyak/mohammad/cp2k
 ```
 
-In order to `make` CP2K, do the following commands:
+The procedure uses the CP2K toolchain, CCR software modules, GCC, OpenMPI through `foss`, and Intel MKL. It also includes troubleshooting notes for long dependency builds, shared-library errors, module-file setup, and a Slurm test job.
 
+> **Important:** CCR software stacks change over time. Before repeating this installation, check the CCR documentation and available modules with `module avail`. In the installation described here, `ccrsoft/2024.04` was used because it provided newer compilers and libraries than the default stack.
+
+---
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Recommended installation location](#recommended-installation-location)
+3. [Load CCR software modules](#load-ccr-software-modules)
+4. [Download CP2K](#download-cp2k)
+5. [Enter the CP2K toolchain directory](#enter-the-cp2k-toolchain-directory)
+6. [Inspect toolchain options](#inspect-toolchain-options)
+7. [Run the CP2K toolchain](#run-the-cp2k-toolchain)
+8. [Handling interrupted or slow dependency builds](#handling-interrupted-or-slow-dependency-builds)
+9. [Specific workaround for Libint and LibXC](#specific-workaround-for-libint-and-libxc)
+10. [Final toolchain command used](#final-toolchain-command-used)
+11. [Build CP2K](#build-cp2k)
+12. [Install CP2K](#install-cp2k)
+13. [Test CP2K interactively](#test-cp2k-interactively)
+14. [Troubleshooting runtime library errors](#troubleshooting-runtime-library-errors)
+15. [Create a CP2K module file](#create-a-cp2k-module-file)
+16. [Add the module path to `.bashrc`](#add-the-module-path-to-bashrc)
+17. [Run CP2K through the module](#run-cp2k-through-the-module)
+18. [Example Slurm submission script](#example-slurm-submission-script)
+19. [Useful commands](#useful-commands)
+20. [Summary of the final environment](#summary-of-the-final-environment)
+
+---
+
+## Overview
+
+The installation follows these main steps:
+
+1. Load the newer CCR software stack.
+2. Load `foss` for GCC, OpenMPI, OpenBLAS, LAPACK, ScaLAPACK, FFTW, and related tools.
+3. Load Intel MKL through `imkl`.
+4. Clone CP2K recursively so that submodules such as DBCSR are included.
+5. Use the CP2K toolchain to build dependencies.
+6. Skip a few optional packages that were not needed for this installation.
+7. Build and install CP2K.
+8. Fix runtime library paths.
+9. Create a local module file so users can load CP2K easily.
+10. Test CP2K using an example input and a Slurm job.
+
+The final executable is expected at:
+
+```bash
+/vscratch/grp-alexeyak/mohammad/cp2k/install/bin/cp2k.psmp
 ```
-source install/setup # You need to source this file in the install directory before installation
-cd ../..
-make -j 16 ARCH=local VERSION=psmp
+
+---
+
+## Installation location
+
+Choose a scratch or project location with enough space. In this installation, the working directory was:
+
+```bash
+/vscratch/grp-alexeyak/mohammad
+```
+
+Then CP2K was cloned into:
+
+```bash
+/vscratch/grp-alexeyak/mohammad/cp2k
+```
+
+You can adjust the path for your own account or group directory. Throughout this README, replace:
+
+```bash
+/vscratch/grp-alexeyak/mohammad
+```
+
+with your own installation prefix if needed.
+
+---
+
+## Load CCR software modules
+
+Start with a clean module environment:
+
+```bash
+module purge
+```
+
+Load the newer CCR software stack:
+
+```bash
+module load ccrsoft/2024.04
+```
+
+In this installation, `ccrsoft/2024.04` made the following relevant modules available:
+
+```text
+ccrsoft/2024.04
+foss/2023b
+imkl/2023.2.0
+# Optional: cuda/12.4.0
 ```
 
 
-After compilation is finished, create a module file in the modules directory (`/projects/academic/cyberwksp21/MODULES`) with the following content:
+`foss/2023b` provides a complete compiler and MPI software stack, including:
 
+- GCC
+- OpenMPI
+- FlexiBLAS
+- OpenBLAS
+- LAPACK
+- ScaLAPACK
+- FFTW
+
+`imkl/2023.2.0` is used to provide Intel MKL and the `MKLROOT` environment variable.
+
+You can verify the tools with:
+
+```bash
+which gcc
+which g++
+which gfortran
+which mpirun
+echo $MKLROOT
 ```
+
+---
+
+## Download CP2K
+
+Clone CP2K from GitHub using `--recursive`. The recursive clone is important because CP2K uses submodules, including DBCSR.
+
+```bash
+cd /vscratch/grp-alexeyak/mohammad
+git clone --recursive https://github.com/cp2k/cp2k.git cp2k
+```
+
+Enter the CP2K source directory:
+
+```bash
+cd cp2k
+```
+
+---
+
+## Enter the CP2K toolchain directory
+
+The CP2K toolchain is located in:
+
+```bash
+cd tools/toolchain
+```
+
+This directory contains scripts such as:
+
+```bash
+install_cp2k_toolchain.sh
+build_cp2k.sh
+```
+
+---
+
+## Inspect toolchain options
+
+Before installing dependencies, inspect the available options:
+
+```bash
+./install_cp2k_toolchain.sh --help
+```
+
+This is useful because the toolchain can install many optional packages. Some may not be needed for your intended CP2K usage.
+
+For example, PLUMED can be useful for metadynamics, but may not be required for a basic CP2K installation. COSMA, ELPA, GSL, and SIRIUS were skipped in the final working installation described here.
+
+---
+
+## Run the CP2K toolchain
+
+A first attempt can be made with:
+
+```bash
+./install_cp2k_toolchain.sh
+```
+
+However, on CCR, some dependency builds may take a long time. If the job is running on a login node, it may be interrupted or become inconvenient to manage. A better practice is to request an interactive compute node and run the installation there.
+
+Example interactive allocation:
+
+```bash
+salloc \
+  --account=alexeyak \
+  --partition=general-compute \
+  --qos=general-compute \
+  --clusters=ub-hpc \
+  --time=01:00:00 \
+  --nodes=1 \
+  --ntasks-per-node=9 \
+  --cpus-per-task=1 \
+  --mem=10000
+```
+
+Then reload the required modules inside the allocation:
+
+```bash
+module purge
+module load ccrsoft/2024.04
+module load foss/2023b
+module load imkl/2023.2.0
+```
+
+Return to the toolchain directory:
+
+```bash
+cd /vscratch/grp-alexeyak/mohammad/cp2k/tools/toolchain
+```
+
+---
+
+## Handling interrupted or slow dependency builds
+
+The CP2K toolchain creates two important directories:
+
+```bash
+build/
+install/
+```
+
+If the toolchain fails early or becomes inconsistent, you can remove one or both of these directories and restart:
+
+```bash
+rm -rf build
+rm -rf install
+```
+
+However, this can take time and removes all progress. A better approach is often to remove only the failing package directory inside `build/` and rerun the toolchain.
+
+For example, if a package fails or is interrupted:
+
+```bash
+cd /vscratch/grp-alexeyak/mohammad/cp2k/tools/toolchain/build
+rm -rf package-name
+cd ..
+./install_cp2k_toolchain.sh [options]
+```
+
+General advice:
+
+- If a package appears stuck, inspect its build directory.
+- Look at `configure.log`, `make.log`, or `install.log` if available.
+- If configuration is already complete, manually running `make -jN` may help.
+- Always run `make install` after a successful manual build.
+- Make sure the corresponding install path is added to `PATH`, `LD_LIBRARY_PATH`, or `LIBRARY_PATH` as needed.
+
+---
+
+## Specific workaround for Libint and LibXC
+
+In this installation, Libint and LibXC took a long time to compile through the toolchain. The workaround was to enter the already-configured build directories and compile them manually.
+
+### Libint
+
+The Libint build directory was:
+
+```bash
+/vscratch/grp-alexeyak/mohammad/cp2k/tools/toolchain/build/libint-v2.13.1-cp2k-lmax-5/build
+```
+
+Manual build:
+
+```bash
+cd /vscratch/grp-alexeyak/mohammad/cp2k/tools/toolchain/build/libint-v2.13.1-cp2k-lmax-5/build
+make -j12
+make install
+```
+
+Then verify installation directories, for example:
+
+```bash
+ls ../../install/libint-v2.13.1-cp2k-lmax-5/
+```
+
+### LibXC
+
+The LibXC build directory was:
+
+```bash
+/vscratch/grp-alexeyak/mohammad/cp2k/tools/toolchain/build/libxc-7.0.0/build
+```
+
+Manual build:
+
+```bash
+cd /vscratch/grp-alexeyak/mohammad/cp2k/tools/toolchain/build/libxc-7.0.0/build
+make -j12
+make install
+```
+
+### Letting the toolchain continue after a manual dependency install
+
+After manually building and installing a dependency, the toolchain may still try to rebuild it. One workaround used here was to edit the relevant toolchain stage scripts so that the unpack/configure/build/install commands were commented out, while keeping the checksum-writing line active.
+
+For Libint:
+
+```bash
+vi /vscratch/grp-alexeyak/mohammad/cp2k/tools/toolchain/scripts/stage3/install_libint.sh
+```
+
+For LibXC:
+
+```bash
+vi /vscratch/grp-alexeyak/mohammad/cp2k/tools/toolchain/scripts/stage3/install_libxc.sh
+```
+
+Comment out the repeated build commands, but keep the final line similar to:
+
+```bash
+write_checksums "${install_lock_file}" "${SCRIPT_DIR}/stage3/$(basename ${SCRIPT_NAME})"
+```
+
+Then rerun the toolchain from:
+
+```bash
+cd /vscratch/grp-alexeyak/mohammad/cp2k/tools/toolchain
+./install_cp2k_toolchain.sh [options]
+```
+
+> This workaround should be used carefully. It assumes that the package was actually built and installed correctly.
+
+---
+
+## Final toolchain command used
+
+The final successful toolchain command skipped ELPA, COSMA, GSL, and SIRIUS:
+
+```bash
+cd /vscratch/grp-alexeyak/mohammad/cp2k/tools/toolchain
+./install_cp2k_toolchain.sh \
+  --with-elpa=no \
+  --with-cosma=no \
+  --with-gsl=no \
+  --with-sirius=no
+```
+
+This command was reached after testing the toolchain and deciding that these optional components were not needed for the current installation.
+
+At the end, the toolchain printed an epilogue similar to:
+
+```text
+Done! To build CP2K with dependencies you installed via toolchain, simply run
+this script:
+
+  ./build_cp2k.sh -j 64
+
+It will source the file "install/setup", generate proper CMake flags based on
+toolchain options, and then build and install CP2K.
+```
+
+---
+
+## Build CP2K
+
+From the toolchain directory:
+
+```bash
+cd /vscratch/grp-alexeyak/mohammad/cp2k/tools/toolchain
+./build_cp2k.sh -j 25
+```
+
+The script detects the CP2K root directory and generates CMake flags. In this installation, it generated a configuration similar to:
+
+```text
+-DCMAKE_INSTALL_PREFIX=/vscratch/grp-alexeyak/mohammad/cp2k/install
+-DBUILD_SHARED_LIBS=ON
+-DCP2K_DATA_DIR=/vscratch/grp-alexeyak/mohammad/cp2k/data
+-DCP2K_USE_MPI=ON
+-DCP2K_USE_MPI_F08=ON
+-DCP2K_USE_FFTW3=ON
+-DCP2K_USE_LIBINT2=ON
+-DCP2K_USE_LIBXC=ON
+-DCP2K_USE_LIBXSMM=ON
+-DCP2K_USE_SPGLIB=ON
+-DCP2K_USE_VORI=ON
+```
+
+If the build takes too long or appears stuck, another useful approach is:
+
+1. Run `./build_cp2k.sh -j 25` once to generate the configuration.
+2. Enter the CP2K build directory.
+3. Source the toolchain setup file.
+4. Run `make` manually.
+5. Run `make install`.
+
+Commands:
+
+```bash
+cd /vscratch/grp-alexeyak/mohammad/cp2k/build
+source ../tools/toolchain/install/setup
+make -j25
+make install
+```
+
+---
+
+## Install CP2K
+
+After the build completes, install CP2K with:
+
+```bash
+make install
+```
+
+The executable should be installed in:
+
+```bash
+/vscratch/grp-alexeyak/mohammad/cp2k/install/bin
+```
+
+Check the installation:
+
+```bash
+ls /vscratch/grp-alexeyak/mohammad/cp2k/install/bin
+```
+
+Expected executable:
+
+```bash
+cp2k.psmp
+```
+
+---
+
+## Test CP2K interactively
+
+Before running CP2K, set:
+
+```bash
+export OMP_NUM_THREADS=1
+```
+
+This is important when using MPI ranks with the `psmp` executable.
+
+A first test was attempted in:
+
+```bash
+cd /vscratch/grp-alexeyak/mohammad/cp2k/tests/QS/regtest-tddfpt
+```
+
+Run:
+
+```bash
+mpirun -np 9 ../../../install/bin/cp2k.psmp -i H2Oplus_tddfpt.inp
+```
+
+Another useful test is in:
+
+```bash
+cd /vscratch/grp-alexeyak/mohammad/cp2k/tests/QS/regtest-double-hybrid-1
+```
+
+Run:
+
+```bash
+mpirun -np 9 ../../../install/bin/cp2k.psmp -i H2O_B2PLYP_GPW.inp
+```
+
+After creating the module file described below, this can be simplified to:
+
+```bash
+module load cp2k_v2026
+mpirun -np 9 cp2k.psmp -i H2O_B2PLYP.inp
+```
+
+---
+
+## Troubleshooting runtime library errors
+
+### Error 1: `libcp2k.so.2026.1` not found
+
+Example error:
+
+```text
+cp2k.psmp: error while loading shared libraries: libcp2k.so.2026.1: cannot open shared object file: No such file or directory
+```
+
+Solution:
+
+```bash
+export LD_LIBRARY_PATH=/vscratch/grp-alexeyak/mohammad/cp2k/install/lib:$LD_LIBRARY_PATH
+```
+
+Then rerun CP2K.
+
+---
+
+### Error 2: `libmkl_gnu_thread.so.2` not found
+
+Example error:
+
+```text
+cp2k.psmp: error while loading shared libraries: libmkl_gnu_thread.so.2: cannot open shared object file: No such file or directory
+```
+
+Check `MKLROOT`:
+
+```bash
+echo $MKLROOT
+```
+
+For this installation, it was:
+
+```bash
+/cvmfs/soft.ccr.buffalo.edu/versions/2024.04/easybuild/x86_64/software/x86-64-v4/Core/imkl/2023.2.0/mkl/2023.2.0
+```
+
+The required MKL library was found under:
+
+```bash
+$MKLROOT/lib/intel64
+```
+
+Add it to `LD_LIBRARY_PATH`:
+
+```bash
+export LD_LIBRARY_PATH=/cvmfs/soft.ccr.buffalo.edu/versions/2024.04/easybuild/x86_64/software/x86-64-v4/Core/imkl/2023.2.0/mkl/2023.2.0/lib/intel64:$LD_LIBRARY_PATH
+```
+
+---
+
+### Error 3: `GLIBCXX_3.4.32` not found
+
+Example error:
+
+```text
+libstdc++.so.6: version `GLIBCXX_3.4.32' not found
+```
+
+This means CP2K needs the newer `libstdc++` from GCC 13.2.0, but an older compatibility library is being found first.
+
+Check the GCC executable:
+
+```bash
+which gcc
+```
+
+In this installation:
+
+```bash
+/cvmfs/soft.ccr.buffalo.edu/versions/2024.04/easybuild/x86_64/software/x86-64-v4/Core/gcccore/13.2.0/bin/gcc
+```
+
+The matching GCC library directory is:
+
+```bash
+/cvmfs/soft.ccr.buffalo.edu/versions/2024.04/easybuild/x86_64/software/x86-64-v4/Core/gcccore/13.2.0/lib64
+```
+
+Add it to `LD_LIBRARY_PATH`:
+
+```bash
+export LD_LIBRARY_PATH=/cvmfs/soft.ccr.buffalo.edu/versions/2024.04/easybuild/x86_64/software/x86-64-v4/Core/gcccore/13.2.0/lib64:$LD_LIBRARY_PATH
+```
+
+Then run CP2K again.
+
+---
+
+## Create a CP2K module file
+
+To make the installation easier for users, create a local module directory:
+
+```bash
+mkdir -p /vscratch/grp-alexeyak/mohammad/modules
+```
+
+Create this file:
+
+```bash
+/vscratch/grp-alexeyak/mohammad/modules/cp2k_v2026.lua
+```
+
+Example module file:
+
+```lua
 whatis("Description: CP2K")
-whatis("Version: 2024.1")
+whatis("Version: 2026")
 whatis("Category: Chem")
-load("ccrsoft/2023.01")
-load("imkl/2022.0.1")
-load("gcc/11.2.0")
-load("openmpi/4.1.1")
-prepend_path("PATH","/projects/academic/cyberwksp21/SOFTWARE_NEW_ENV/cp2k/cp2k_v24/exe/local")
-prepend_path("LD_LIBRARY_PATH","/cvmfs/soft.ccr.buffalo.edu/versions/2023.01/easybuild/software/Core/imkl/2022.0.1/mkl/2022.0.1/lib/intel64")
-prepend_path("LD_LIBRARY_PATH","/cvmfs/soft.ccr.buffalo.edu/versions/2023.01/easybuild/software/avx512/Compiler/gcc/11.2.0/openmpi/4.1.1/lib64")
-prepend_path("LD_LIBRARY_PATH","/cvmfs/soft.ccr.buffalo.edu/versions/2023.01/easybuild/software/Core/gcccore/11.2.0/lib64")
-setenv("OMP_NUM_THREADS","1")
-add_property("type_","chem")
+
+-- Load required CCR software stack.
+-- On this CCR setup, execute worked more reliably than plain load().
+execute {cmd="module load ccrsoft/2024.04", modeA={"load"}}
+execute {cmd="module load foss/2023b", modeA={"load"}}
+execute {cmd="module load imkl/2023.2.0", modeA={"load"}}
+
+-- Source the CP2K toolchain setup generated during installation.
+execute {cmd="source /vscratch/grp-alexeyak/mohammad/cp2k/tools/toolchain/install/setup", modeA={"load"}}
+
+-- CP2K executable.
+prepend_path("PATH", "/vscratch/grp-alexeyak/mohammad/cp2k/install/bin")
+
+-- Runtime libraries.
+prepend_path("LD_LIBRARY_PATH", "/vscratch/grp-alexeyak/mohammad/cp2k/install/lib")
+prepend_path("LD_LIBRARY_PATH", "/cvmfs/soft.ccr.buffalo.edu/versions/2024.04/easybuild/x86_64/software/x86-64-v4/Core/imkl/2023.2.0/mkl/2023.2.0/lib/intel64")
+prepend_path("LD_LIBRARY_PATH", "/cvmfs/soft.ccr.buffalo.edu/versions/2024.04/easybuild/x86_64/software/x86-64-v4/Core/gcccore/13.2.0/lib64")
+
+-- Recommended for MPI-only test runs with cp2k.psmp.
+execute {cmd="export OMP_NUM_THREADS=1", modeA={"load"}}
+
+add_property("type_", "chem")
 ```
 
-## B. Running CP2K
+> Note: Some module systems may not preserve `export OMP_NUM_THREADS=1` from `execute`. If needed, set it manually in your shell or Slurm script:
+>
+> ```bash
+> export OMP_NUM_THREADS=1
+> ```
 
-See the following script for an example of running a computation with CP2K.
+---
 
-Here is an example to run on our cluster: 
+## Add the module path to `.bashrc`
 
-    #!/bin/sh
-    #SBATCH --partition=general-compute  --qos=general-compute
-    #SBATCH --clusters=ub-hpc
-    #SBATCH --nodes=1
-    #SBATCH --ntasks-per-node=6
-    #SBATCH --cpus-per-task=1
-    #SBATCH --time=00:10:00
-    #SBATCH --mem=10000
-    ###SBATCH -C CPU-E5-2650v4 # This is the type of CPUs on valhalla nodes
-    #SBATCH -C CPU-Gold-6130 # The head node CPU type for not getting warnings or errors
+Add the following line to your `~/.bashrc`:
 
-    module use /projects/academic/cyberwksp21/MODULES
-    module load cp2k/v24/avx512
-    mpirun -np 6 cp2k.psmp -i input.inp -o out
-
-    
-## C. Input Example
-
-### C.1. Single point calculations of water molecule at the B3LYP level of theory:
-
+```bash
+module use /vscratch/grp-alexeyak/mohammad/modules
 ```
-&GLOBAL
-  #  TRACE
-  PRINT_LEVEL MEDIUM
-  PROJECT H2O-hybrid-b3lyp_libxc
-&END GLOBAL
 
-&FORCE_EVAL
-  METHOD Quickstep
-  &DFT
-    BASIS_SET_FILE_NAME EMSL_BASIS_SETS
-    POTENTIAL_FILE_NAME POTENTIAL
-    &MGRID
-      CUTOFF 250
-      REL_CUTOFF 50
-    &END MGRID
-    &POISSON
-      PERIODIC NONE
-      PSOLVER MT
-    &END POISSON
-    &QS
-      METHOD GAPW
-    &END QS
-    &SCF
-      EPS_SCF 1.0E-6
-      IGNORE_CONVERGENCE_FAILURE
-      MAX_SCF 2
-      SCF_GUESS ATOMIC
-    &END SCF
-    #This is B3LYP using VWN3
-    &XC
-      &HF
-        FRACTION 0.20
-        !&MEMORY
-        !  MAX_MEMORY 5
-        !&END MEMORY
-        &SCREENING
-          EPS_SCHWARZ 1.0E-10
-        &END SCREENING
-      &END HF
-      &XC_FUNCTIONAL
-        &HYB_GGA_XC_B3LYP
-        &END HYB_GGA_XC_B3LYP
-      &END XC_FUNCTIONAL
-    &END XC
-  &END DFT
-  &SUBSYS
-    &CELL
-      ABC 6.0 6.0 6.0
-      PERIODIC NONE
-    &END CELL
-    &COORD
-      O   0.000000    0.000000   -0.065587
-      H   0.000000   -0.757136    0.520545
-      H   0.000000    0.757136    0.520545
-    &END COORD
-    &KIND H
-      BASIS_SET 6-31Gxx
-      POTENTIAL ALL
-    &END KIND
-    &KIND O
-      BASIS_SET 6-31Gxx
-      POTENTIAL ALL
-    &END KIND
-  &END SUBSYS
-&END FORCE_EVAL
+Then reload your shell or source `.bashrc`:
+
+```bash
+source ~/.bashrc
 ```
+
+Now CP2K can be loaded with:
+
+```bash
+module load cp2k_v2026
+```
+
+Verify:
+
+```bash
+which cp2k.psmp
+```
+
+Expected output:
+
+```bash
+/vscratch/grp-alexeyak/mohammad/cp2k/install/bin/cp2k.psmp
+```
+
+---
+
+## Run CP2K through the module
+
+Example test:
+
+```bash
+module load cp2k_v2026
+export OMP_NUM_THREADS=1
+
+cd /vscratch/grp-alexeyak/mohammad/cp2k/tests/QS/regtest-double-hybrid-1
+mpirun -np 9 cp2k.psmp -i H2O_B2PLYP.inp
+```
+
+To check for warnings:
+
+```bash
+mpirun -np 9 cp2k.psmp -i H2O_B2PLYP.inp | grep -i 'warning'
+```
+
+---
+
+## Example Slurm submission script
+
+Create a file such as:
+
+```bash
+submit_cp2k.slm
+```
+
+with the following contents:
+
+```bash
+#!/bin/bash -l
+
+## Account and partition choices. Uncomment/change as needed.
+##SBATCH --account=alexeyak
+##SBATCH --partition=valhalla
+##SBATCH --qos=valhalla
+##SBATCH --clusters=faculty
+
+#SBATCH --partition=general-compute
+#SBATCH --qos=general-compute
+#SBATCH --clusters=ub-hpc
+##SBATCH --partition=scavenger
+##SBATCH --qos=scavenger
+
+#SBATCH --time=00:10:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=9
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=10000
+
+###SBATCH --mail-user=mshakiba@buffalo.edu
+
+ echo "SLURM_JOBID=$SLURM_JOBID"
+ echo "SLURM_JOB_NODELIST=$SLURM_JOB_NODELIST"
+ echo "SLURM_NNODES=$SLURM_NNODES"
+ echo "SLURMTMPDIR=$SLURMTMPDIR"
+ echo "working directory=$SLURM_SUBMIT_DIR"
+
+module use /vscratch/grp-alexeyak/mohammad/modules
+module load cp2k_v2026
+
+export OMP_NUM_THREADS=1
+
+mpirun -np 9 cp2k.psmp \
+  -i /vscratch/grp-alexeyak/mohammad/cp2k/tests/QS/regtest-double-hybrid-1/H2O_B2PLYP.inp \
+  -o /vscratch/grp-alexeyak/mohammad/output.log
+```
+
+Submit the job:
+
+```bash
+sbatch submit_cp2k.slm
+```
+
+Check status:
+
+```bash
+squeue -u $USER
+```
+
+or watch continuously:
+
+```bash
+watch squeue -u $USER
+```
+
+Check output:
+
+```bash
+cat /vscratch/grp-alexeyak/mohammad/output.log
+```
+
+---
+
+## Useful commands
+
+### Check loaded modules
+
+```bash
+module list
+```
+
+### Check available modules
+
+```bash
+module avail
+```
+
+### Start clean
+
+```bash
+module purge
+```
+
+### Check compiler and MPI paths
+
+```bash
+which gcc
+which g++
+which gfortran
+which mpirun
+```
+
+### Check CP2K path
+
+```bash
+which cp2k.psmp
+```
+
+### Check MKL path
+
+```bash
+echo $MKLROOT
+```
+
+### Inspect PATH
+
+```bash
+echo $PATH
+```
+
+### Search PATH for GCC
+
+```bash
+echo $PATH | grep -i gcc
+```
+
+### Add a library path manually
+
+```bash
+export LD_LIBRARY_PATH=/full/path/to/lib_or_lib64:$LD_LIBRARY_PATH
+```
+
+### Recommended runtime variable
+
+```bash
+export OMP_NUM_THREADS=1
+```
+
+---
+
+## Notes about CPU architecture
+
+When installing on CCR, pay attention to the CPU architecture of the node where CP2K and its dependencies are compiled. You can check the architecture with:
+
+```bash
+lscpu
+```
+
+At the time of this installation, it was considered safe to install on one node and use the installation on other compatible nodes. However, older cases such as AVX2-specific nodes may require explicit compiler architecture flags, for example:
+
+- GNU compilers: `-march=avx2`
+- Intel compilers: `-xAVX2`
+
+Use architecture-specific flags only when needed and only if you know the target nodes are compatible.
+
+---
+
+## Summary of the final environment
+
+The working installation used:
+
+```bash
+module load ccrsoft/2024.04
+module load foss/2023b
+module load imkl/2023.2.0
+```
+
+The final CP2K toolchain command was:
+
+```bash
+./install_cp2k_toolchain.sh \
+  --with-elpa=no \
+  --with-cosma=no \
+  --with-gsl=no \
+  --with-sirius=no
+```
+
+The final CP2K build/install commands were:
+
+```bash
+cd /vscratch/grp-alexeyak/mohammad/cp2k/build
+source ../tools/toolchain/install/setup
+make -j25
+make install
+```
+
+The final executable was:
+
+```bash
+/vscratch/grp-alexeyak/mohammad/cp2k/install/bin/cp2k.psmp
+```
+
+The most important runtime paths were:
+
+```bash
+export LD_LIBRARY_PATH=/vscratch/grp-alexeyak/mohammad/cp2k/install/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/cvmfs/soft.ccr.buffalo.edu/versions/2024.04/easybuild/x86_64/software/x86-64-v4/Core/imkl/2023.2.0/mkl/2023.2.0/lib/intel64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/cvmfs/soft.ccr.buffalo.edu/versions/2024.04/easybuild/x86_64/software/x86-64-v4/Core/gcccore/13.2.0/lib64:$LD_LIBRARY_PATH
+```
+
+The final module load command was:
+
+```bash
+module use /vscratch/grp-alexeyak/mohammad/modules
+module load cp2k_v2026
+```
+
+Then CP2K can be run with:
+
+```bash
+export OMP_NUM_THREADS=1
+mpirun -np 9 cp2k.psmp -i input_file.inp -o output.log
+```
+
+---
+
+## Minimal quick-start for users after installation
+
+Once the installation and module file are already prepared, users only need:
+
+```bash
+module use /vscratch/grp-alexeyak/mohammad/modules
+module load cp2k_v2026
+export OMP_NUM_THREADS=1
+
+mpirun -np 9 cp2k.psmp -i input_file.inp -o output.log
+```
+
+For Slurm jobs, place the same module commands inside the job script.
+
+
 </xmp>
 
 
