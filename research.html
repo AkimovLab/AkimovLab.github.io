@@ -56,193 +56,107 @@
 <xmp theme="bootstrap-responsive">
 ## **1. Theory and Methodology for Quantum Dynamics**
 
-  In the ideal world, theoretical and computational tools should be able to guide experimental efforts, be predictive and fast. However,
-  one quickly realizes that modeling of almost any sufficiently complex material or phenomena hits the wall of the computational methods being
-  either too expensive or not accurate enough to be widely used. For this reason, the computation-enabled rational design of materials is still 
-  a very challenging topic and a far-going endeavor for many scientists. This challenge is being constantly addressed by many researchers who
-  come up with a variety of approximations, however the applicability and reliability of such calculations is not always clearly understood. In 
-  addition, the complexity of many problems pushes researchers to use such  
-
-  In the Akimov group, we strive to enable efficient, accurate, and easy-to-use simulations of the dynamical processes 
-  that occur in various materials. The presently-available methods are often very expensive to apply or/and may not always have the 
-  desired capabilities. Addressing the most urgent, application-driven challenges in computations, we work along several parallel directions. 
+  We develop, assess, and apply efficient methods for quantum and nonadiabatic dynamics. Our goal is to establish where common
+  approximations are reliable, design better algorithms where they are not, and make predictive simulations practical for molecules,
+  nanostructures, and condensed-phase materials.
 
 #### **1.1. Methodology assessment - en route to Jacob's ladder of nonadiabatic dynamics methods**
-   <div class="row">
-     <div class="col-12">
-       <img style="width: 50%; float: left; margin-left: 15px; margin-right: 15px; margin-top: 15px; margin-bottom: 15px;"
-          title="Jacob's ladder" alt="Jacob's ladder" src="images/research2.png">
+  <img class="research-figure research-figure-left" style="float: left; margin-left: 15px; margin-right: 15px; margin-top: 15px; margin-bottom: 15px;"
+       title="Jacob's ladder" alt="Jacob's ladder" src="images/research2.png">
+  <p>Nonadiabatic dynamics offers many competing hopping, decoherence, propagation, and electronic-structure choices, yet their
+  domains of validity are not always clear. We build broader benchmarks, identify failure modes, and compare algorithms under
+  controlled conditions. The long-term aim is a community-tested “Jacob’s ladder” that helps researchers choose methods based
+  on demonstrated accuracy, stability, and cost.</p>
 
-  <p>The studies of the nonadiabatic (NA) and quantum dynamics (QD) methodologies constitute an active field of research. 
-  Numerous innovative algorithms for fully quantum, semiclassical, and quantum-classical dynamics accounting for NA
-  and quantum nuclear effects are being proposed and reported regularly. Simultaneous with advancing to the field, 
-  the expanding “zoo” of methods becomes too diverse and virtually unmanageable. The question “which method to choose?”
-  becomes a practical challenge not only to a software “user” (e.g., domain researcher), but often to an expert theorist. 
-  This is a consequence of the absence of a comprehensive exploration of the methods’ applicability limits.
-  Among few, the Marcus (spin-boson) and Tully models are the most widely utilized. However, a great deal of other known
-  problems or tested models have been reported, but stay unnoticed in the reports of the new methodology developments. Thus,
-  the effective size of the benchmark sets used in NA/QD methods developments remain unprecedentedly small. This is in
-  contrast to the significantly more extensive electronic structure methods benchmark sets. The development of such a 
-  comprehensive testbed would help standardize and assess new NA/QD methodologies when they are reported and therefore 
-  would accelerate the development of better methods. Together with the comprehensive validation databases, one may be 
-  able to build a **“Jacob’s ladder" of NA/QD methods"**, in analogy to that of DFT.</p>
+  <div class="representative-papers"><strong>Representative papers</strong>
+  <ul>
+    <li>Akimov, A. V. “<a href="https://doi.org/10.1021/acs.jctc.5c01635">Toward Community-Driven Benchmarking and Ranking of Nonadiabatic Dynamics Methodologies</a>.” <i>J. Chem. Theory Comput.</i> <b>2025</b>, 21, 11821–11846.</li>
+    <li>Shakiba, M.; Han, D.; Mukherjee, S.; Akimov, A. V. “<a href="https://doi.org/10.1063/5.0314503">Assessment of Trajectory Surface Hopping Methods in Long-Time Nonadiabatic Dynamics</a>.” <i>J. Chem. Phys.</i> <b>2026</b>, 164, 104110.</li>
+    <li>Smith, B. A.; Akimov, A. V. “<a href="https://doi.org/10.1063/1.5122770">A Comparative Analysis of Surface Hopping Acceptance and Decoherence Algorithms within the Neglect of Back-Reaction Approximation</a>.” <i>J. Chem. Phys.</i> <b>2019</b>, 151, 124107.</li>
+  </ul></div>
 
-  <p>The Akimov group we conduct a systematic assessment of various options to conduct NA/QD simulations - the choice of the
-  hopping algorithm, decoherence, electron-phonon interactions, as well as the choices related to electronic structure and
-  nuclear dynamics calculations.</p>
-     </div>
-   </div>
+####  **1.2. New Methodologies and Computational Workflows for NA-MD**
+  <p>Methodology development is central to our work. We implement and assess mixed quantum–classical methods derived from
+  **exact factorization**, including SHXF, MQCXF, and MFXF, and develop **quantum-trajectory surface hopping (QTSH)** for
+  multistate dynamics. We also design lower-cost and **NAC-free approaches** for simulations where derivative couplings are
+  unavailable or too expensive.</p>
 
-####  **1.2. New computational tools for NA-MD** 
-   <div class="row">
-     <div class="col-12">
-  <p>In addition, to assessing the existing methodologies, we are fully engaged in the development of new techniques
-  to address a variety of problems that one faces when models NA-MD in materials. These issues include: the size limitations,
-  the time-scale limitations, a variety of "technical" know-hows needed for correct execution of the NA-MD, and many others.
-  Along the lines of the **size scale problems**, we develop a variety of approaches to enable such simulations in larger 
-  (truly nanoscale) systems, including the "fragmentation" techiniques, semiempirical and density-functional 
-  tight-binding approaches, as well as the dynamical methods that can circumvent the certain expensive computations, such
-  as in the Landau-Zener based NA dynamics. We also interface the NA-MD approaches with the codes
-  that can take advantage of the linear-scaling electronic structure calculations.</p>
-
-  <img style="width: 50%; float: left; margin-left: 15px; margin-right: 15px; margin-top: 15px; margin-bottom: 15px;"
+  <img class="research-figure research-figure-left" style="float: left; margin-left: 15px; margin-right: 15px; margin-top: 15px; margin-bottom: 15px;"
        title="Methods and Practical Tools" alt="Methods and Practical Tools" src="images/research3.png">
 
-  <p> With regard to the **time scale** and **sampling** limitations, we develop formal and physics-motivated 
-  machine-learning approaches to enable long-time simulations of multiple trajectories in NA-MD
-  calculations. Long trajectories are critical for being able to describe intrinsically slow processes such as 
-  electron-hole recombination. Running many trajectories is needed to be able to estimate the error bars of
-  computed timescales. However, such calculations are too demanding to compute in a brute-force ways. Thus, 
-  more clever approaches are needed - this is where we can learn from short dynamics and use this information to 
-  give a peek to much longer evolutions. </p>
-  <p> Last but not least, often when one tries to implement/use mathematically-rigorous approaches, one may get into
-  troubles simply because the working procedures as implemented in software are very different from the idealistic 
-  mathematical expectations (e.g. from the formulas). This class of problems includes the phenomena such as 
-  **phase inconsistency** in numerically computing NA couplings, **spurious state identity changes**, the 
-  interpretation of the wavefunctions yielded by the electronic structure codes (e.g. **1-electron vs. many-body**, 
-  **all-electron vs. pseudized wavefunctions**,  etc.), and so on.  We strive to recognize these potential drawbacks of
-  the naive implementations and develop the innovative ways of solving them. Such type of problems usually 
-  arise quite sporadically as we work of some "applied studies" and face these edifficulties.</p>
-   </div>
-  </div>
+  <p>Reliable dynamics also requires robust treatment of **state tracking and phase correction**, trivial crossings, and mappings
+  between one-electron and many-body states. For atomistic calculations, Libra workflows currently connect these methods to
+  **CP2K** and **DFTB+**; interfaces to **PySCF** and **OpenMolcas** are under active development. Machine-learned Hamiltonian
+  mappings and reduced-cost workflows extend the accessible system sizes, timescales, and trajectory ensembles.</p>
+
+  <div class="representative-papers"><strong>Representative papers</strong>
+  <ul>
+    <li>Han, D.; Akimov, A. V. “<a href="https://doi.org/10.1021/acs.jctc.4c00343">Nonadiabatic Dynamics with Exact Factorization: Implementation and Assessment</a>.” <i>J. Chem. Theory Comput.</i> <b>2024</b>, 20, 5022–5042.</li>
+    <li>Han, D.; Martens, C. C.; Akimov, A. V. “<a href="https://doi.org/10.1021/acs.jctc.4c01751">Generalization of Quantum-Trajectory Surface Hopping to Multiple Quantum States</a>.” <i>J. Chem. Theory Comput.</i> <b>2025</b>, 21, 2839–2853.</li>
+    <li>Akimov, A. V. “<a href="https://doi.org/10.1021/acs.jpclett.4c02909">State Tracking in Nonadiabatic Molecular Dynamics Using Only Forces and Energies</a>.” <i>J. Phys. Chem. Lett.</i> <b>2024</b>, 15, 11944–11953.</li>
+    <li>Shakiba, M.; Stippell, E.; Li, W.; Akimov, A. V. “<a href="https://doi.org/10.1021/acs.jctc.2c00297">Nonadiabatic Molecular Dynamics with Extended Density Functional Tight-Binding: Application to Nanocrystals and Periodic Solids</a>.” <i>J. Chem. Theory Comput.</i> <b>2022</b>, 18, 5157–5180.</li>
+  </ul></div>
 
 ####  **1.3. Entangled trajectories theories**
-   <div class="row">
-     <div class="col-12">
-  <img style="width: 50%; float: right; margin-left: 15px; margin-right: 15px; margin-top: 15px; margin-bottom: 15px;"
+  <img class="research-figure research-figure-right" style="float: right; margin-left: 15px; margin-right: 15px; margin-top: 15px; margin-bottom: 15px;"
    title="ETHD" alt="ETHD" src="images/research4.png">
 
-  <p>Capturing quantum effects with the formally classical formulations of the dynamics
-  based on multiple trajectories has fascinated many researchers. Such an approach helps one to understand the intricacies
-  of quantum mechanics in the intuitive and familiar language of classical mechanics. The trajectory-based approaches also 
-  promise larger flexibility in reducing computational costs (once suitable approximations are made). In addition, 
-  quantum-classical trajectry techniques may help one to resolve detils of reactive processes, providing detailes description 
-  of potential outcomes of simulations.</p>
-  <p>Among the quantum non-local effects that can be captured with the help of trajectories are: zero-point energies, wavefunction
-  branching and decoherence, tunneling and superexchange. In order to capture such effects, we develop the **entangled Hamiltonian dynamics (ETHD)**
-  method. The method originates from  rigorous quantum equations, known as Heisenberg equations of motion. These equations can be mapped 
-  onto a classical Hamiltonian, which we use as the starting point of our dynamical procedure. The distinctive point of such effective 
-  Hamiltonian is that it mixes up the trajectries in the ensemble, allowing them to communicate with each other, and hence mimic certain
-  non-local effects.</p>
-     </div>
-   </div>
+  <p>Coupled-trajectory formulations provide an intuitive route to quantum nuclear effects while retaining much of the flexibility
+  of classical mechanics. We develop entangled trajectories Hamiltonian dynamics (ETHD) and related quantum-trajectory methods
+  to represent tunneling, zero-point energy, branching, and other nonlocal effects through interactions within a trajectory ensemble.
+  Current work emphasizes stable quantum potentials and adaptive trajectory-guided basis representations.</p>
+
+  <div class="representative-papers"><strong>Representative papers</strong>
+  <ul>
+    <li>Smith, B. A.; Akimov, A. V. “<a href="https://doi.org/10.1063/1.5022573">Entangled Trajectories Hamiltonian Dynamics for Treating Quantum Nuclear Effects</a>.” <i>J. Chem. Phys.</i> <b>2018</b>, 148, 144106.</li>
+    <li>Akimov, A. V. “<a href="https://doi.org/10.1063/5.0289091">Stable Direct Dynamics with Quantum Potential: Lorentzian Trajectory Basis Function Is All You Need</a>.” <i>J. Chem. Phys.</i> <b>2025</b>, 163, 171102.</li>
+    <li>Dutra, M.; Garashchuk, S.; Akimov, A. V. “<a href="https://doi.org/10.1002/qua.27078">The Quantum Trajectory-Guided Adaptive Gaussian Methodology in the Libra Software Package</a>.” <i>Int. J. Quantum Chem.</i> <b>2023</b>, 123, e27078.</li>
+  </ul></div>
 
 _____
 
 ## **2. Open-Source Software for Nonadiabatic and Quantum Dynamics**
-   <div class="row">
-     <div class="col-12">
-  <p>Modeling charge and energy transfer, dynamics of electronic or vibrational energy relaxation, and photoinduced 
-  reactive processes require an explicit consideration of electron-phonon interactions and nonadiabatic effects in 
-  the dynamics. Nonadiabatic molecular dynamics is the general methodology to account for such effects. There is a 
-  large family of various NA-MD techniques, but the existing implementations are relatively scarce. Among the available 
-  packages, there is another level of compications: some either too costly, others are limited in their applicability 
-  to certain types of systems and processes. Furthermore, many implementations take a "black-box" approach, difficult 
-  to extend, or may implement a limited number of developed algorithms.</p>
+  <p>Our software effort is centered on **[Libra](https://github.com/Quantum-Dynamics-Hub/libra-code)**, the group's actively
+  developed open-source library for quantum and nonadiabatic dynamics. Libra turns new theoretical ideas into testable,
+  reproducible algorithms and connects them to practical atomistic workflows.</p>
 
-  <img style="width: 50%; float: right; margin-left: 15px; margin-right: 15px; margin-top: 15px; margin-bottom: 15px;"
+  <img class="research-figure research-figure-right" style="float: right; margin-left: 15px; margin-right: 15px; margin-top: 15px; margin-bottom: 15px;"
   title="Libra" alt="Libra" src="images/research5.png">
 
-  <p>In the Akimov group, we develop a variety of computational tools for NA-MD calculations and beyond, keeping the above points 
-  in mind. We ahere to the concept of modular, transferable, open-source, and easy-to-use/easy-to-extend sofwtare. 
-  The developed software serves as a platform for improving the efficiency and accuracy of the methodologies and as the 
-  practical tools to drive the applied materials research. The packages are distributed at the 
-  <a target="_blank" href="https://github.com/Quantum-Dynamics-Hub">Quantum Dynamics Hub
-   <img src="images/github-logo.png" alt="Quantum Dynamics Hub" width="60" height="60" border="0"> 
-  </a> page. To learn more about the software projects 
-  distributed at Quantum Dynamics Hub, please visit the [official website](https://quantum-dynamics-hub.github.io/index.html)</p>
-
-  <p>As a backbone of all the methodology development and assessment efforts in the Akimov group, we 
-  develop a modular open-source **[Libra](https://github.com/Quantum-Dynamics-Hub/libra-code)** code.
-  Libra is a comprehensive library for methodology development and practical (applied) calculations for both abstract
-  and atomistic models and systems. One can utilize the variety of the "building blocks" (functions, data types, workflows)
-  to to create and test new methodologies, be it anything related to the dynamics (classical or quantum) or to other kinds of 
-  problems. The main use of Libra is perhaps in the realm of quantum-classical trajectory surface hopping or Ehrenfest
-  calculations, but one is not limited by this. Libra's functionality also includes: basic linear algebra and eigensolvers,
-  file processing utilities, molecular integrals (although not super-efficient at the moment), force fields, a number of 
-  simple (e.g. semienpirical) electronic structure calculations, classical molecular dynamics, molecular structure building and
-  analysis tools, Gaussian wavepackets matrix elements, DVR and numericall exact quantum dynamics, dynamics of open quantum systems
-  via HEOM (hierarchy of equations of motion), a variety of surfaceh hopping and decoherences schemes, coupled trajectories methods,
-  and many more. Most of Libra's functionality is available at the C++ and Python levels. The latter helps streamline the methodology
-  development process. A number of the Python-only routines are designed for the workflow-level calculations and handling input/output
-  of a variety of external packages (e.g. DFTB+, QE, eQE, cp2k, GAMESS, Gaussain, LAMMPS, etc.). These capabilities enable 
-  "applied" studies of atomistic systems.</p>
+  <p>Libra provides modular C++ and Python components for trajectory surface hopping, Ehrenfest and coupled-trajectory dynamics,
+  decoherence, grid and wavepacket propagation, open quantum systems, model Hamiltonians, and analysis. Interfaces to electronic-
+  structure packages—including DFTB+, CP2K, Quantum ESPRESSO, GAMESS, and PySCF—support simulations of realistic molecules and
+  materials. The same platform serves method development, systematic benchmarking, teaching, and applied research.</p>
   
-  <p>Learn more about Libra on its dedicated [website](https://quantum-dynamics-hub.github.io/libra/index.html)</p>
+  <p>Development takes place in the <a href="https://github.com/Quantum-Dynamics-Hub/libra-code">Libra repository</a>, with
+  maintained examples in the <a href="https://github.com/compchem-cybertraining/Tutorials_Libra">Libra tutorials</a>.</p>
 
-  <p>We have developed an extensive documentation, tutorials, and knowledge base for Libra users. Check out 
-   <a target="_blank" href="https://github.com/compchem-cybertraining/Tutorials_Libra">Computational Chemistry CyberTraining
-   <img src="images/ccct-logo.png" alt="Computational Chemistry CyberTraining" width="60" height="60" border="0"> 
-   </a> resource
-  </p>
-     </div>
-   </div>
+  <div class="representative-papers"><strong>Representative papers</strong>
+  <ul>
+    <li>Shakiba, M.; Smith, B.; Li, W.; Dutra, M.; Jain, A.; Sun, X.; Garashchuk, S.; Akimov, A. V. “<a href="https://doi.org/10.1016/j.simpa.2022.100445">Libra: A Modular Software Library for Quantum Nonadiabatic Dynamics</a>.” <i>Software Impacts</i> <b>2022</b>, 14, 100445.</li>
+    <li>Temen, S.; Jain, A.; Akimov, A. V. “<a href="https://doi.org/10.1002/qua.26373">Hierarchical Equations of Motion in the Libra Software Package</a>.” <i>Int. J. Quantum Chem.</i> <b>2020</b>, 120, e26373.</li>
+    <li>Dutra, M.; Garashchuk, S.; Akimov, A. V. “<a href="https://doi.org/10.1002/qua.27078">The Quantum Trajectory-Guided Adaptive Gaussian Methodology in the Libra Software Package</a>.” <i>Int. J. Quantum Chem.</i> <b>2023</b>, 123, e27078.</li>
+  </ul></div>
 
 ____
 
 ## **3. Computational Studies of Nonadiabatic and Quantum Dynamics in Solar Energy Materials**
 
-   <div class="row">
-     <div class="col-12">
-
-  <p> Quantum dynamics is widespread in nature and are central to understading many materials and processes in chemical 
-  and physical problems. The examples of these processes include excitonic and charge carrier dynamics, excitation 
-  energy transfer, triplet energy transfer and photon upconversion, vibrational excitation energy relaxation,charge transfer,
-  photoinduced isomerization and reactive scattering, tunneling, spin dynamics and electronic of vibrational decoherence. 
-  Modeling of these processes requires a quantum-mechanical description that goes beyond the common adiabatic or Born-Oppenheimer
-  approximations and accounts for nonadiabaticity. These methods can be generally called the Nonadiabatic Molecular Dynamics
-  (NA-MD) and has been one of the central themes of the group.</p>
-  <img style="width: 50%; float: right; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px;"
+  <p>We apply nonadiabatic dynamics to determine how nuclear motion, electronic structure, coherence, and decoherence control
+  excited-state lifetimes. Target processes include carrier cooling and recombination, charge and energy transfer, trapping,
+  spin relaxation, and photoinduced transformations.</p>
+  <img class="research-figure research-figure-right" style="float: right; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px;"
           title="applications" alt="applications" src="images/research1.png">
-  <p>
-  The search for sustainable and clean energy technologies is an actively pursued research direction. 
-  In particular, materials that can convert solar energy into electricity or chemical fuel, and further referred to as the 
-  solar energy materials, have been in a spotlight of numerous research groups worldwide. In the quest for new materials
-  with remarkable properties, multiple underlying processes must be understood and optimized. Arguably, NA-MD of excited states
-  is one of the key players here, because it determines the outcomes of many
-  photoinduced processes, such as non-radiative electron-hole recombination, “hot” charge carrier cooling, charge transfer
-  and carrier trapping, excitation energy transfer and relaxation, exciton dissociation, or photoinduced isomerization. 
-  Understanding the interplay of these processes is one of the keys to the rational design of new solar energy materials. 
-  </p>
+  <p>Our applications span semiconductor and oxide nanoclusters, two-dimensional materials, perovskites, fullerenes,
+  molecular and solid-state systems, and organic–inorganic interfaces. By connecting atomistic structure to nonradiative
+  pathways, we seek design principles for controlling energy flow and suppressing unwanted losses in energy materials.</p>
 
-  <p> In order to rationally design novel materials and to understand the details of operation of artificial systems, it is
-  imperative to gain comprehensive insights into mechanims of energy conversion, charge transfer, and mechanisms of 
-  photoinduced molecular transformations. These processes are driven by complex interplay of electronic and nuclear degrees
-  of freedom and are intrinsically nonadiabatic. Computational modeling of these interactions and the dynamics of corresponding
-  excited quantum states requires explicit consideraction of electron-phonon interactions, involving multile electronic
-  or vibrational states. 
-  </p>
-
-  <p>In the Akimov group, we use a range of NA-MD methods to understand various aspects of quantum 
-  nonadiabatic dynamics of excited states in a variety of applications and recent experimental studies. 
-  Such studies concern a variety of classes of materials, such as: quantum dots and nanocrystals, 
-  solid-state materials, organic and inorganic heterojunctions, 2D materials, perovskites,
-  dye-sensitized solar cell materials, small molecular systems as well as nanometer sized complexes. </p>
-
-     </div>
-   </div>
-
-
+  <div class="representative-papers"><strong>Representative papers</strong>
+  <ul>
+    <li>Recio-Poo, M.; Bromley, S. T.; Sayres, S. G.; Illas, F.; Akimov, A. V.; Morales-García, Á. “<a href="https://doi.org/10.1021/acs.jpclett.6c01707">Thermally Activated Fluxionality Accelerates Nonradiative Decay in Titania Nanoclusters</a>.” <i>J. Phys. Chem. Lett.</i> <b>2026</b>, 17, 7907–7915.</li>
+    <li>Yasin, K.; Shakiba, M.; Akimov, A. V. “<a href="https://doi.org/10.1021/acs.jpclett.6c00006">Electronic Shannon Entropy as an Effective Descriptor of Nonradiative Dynamics in Dense Manifolds of Excited States: Case Study of C20, C60, C70, C76, C84, C86, and C90 Fullerenes</a>.” <i>J. Phys. Chem. Lett.</i> <b>2026</b>, 17, 2812–2822.</li>
+    <li>Zabihi, H.; Zhang, Q.; Khayati, G. R.; Irannejad, A.; Akimov, A. V. “<a href="https://doi.org/10.1021/acs.jctc.5c00808">Quantum Confinement Effects in Monolayer Black Phosphorus: Revision of the Nonradiative Recombination Dynamics</a>.” <i>J. Chem. Theory Comput.</i> <b>2025</b>, 21, 7991–8009.</li>
+  </ul></div>
 </xmp>
 
       <br><br>					  
@@ -257,6 +171,7 @@ ____
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.rawgit.com/Naereen/StrapDown.js/master/strapdown.min.js"></script>
+    <script src="scripts/site-shell.js"></script>
 
-    <script type="text/javascript" src="https://cdn.rawgit.com/Naereen/StrapDown.js/master/strapdown.min.js"></script>
 </html>

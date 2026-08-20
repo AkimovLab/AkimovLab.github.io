@@ -1,248 +1,228 @@
-<!DOCTYPE HTML>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The Akimov Research Group at the University at Buffalo develops theory, software, and simulations for nonadiabatic quantum dynamics.">
+  <meta name="theme-color" content="#003b70">
+  <meta property="og:title" content="Akimov Research Group">
+  <meta property="og:description" content="Theoretical and computational quantum dynamics at the University at Buffalo.">
+  <meta property="og:type" content="website">
+  <title>Akimov Research Group | Quantum Dynamics at UB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;750;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119266503-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-119266503-1');
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
 
-<html>
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="site-brand" href="index.html" aria-label="Akimov Research Group home">
+        <span class="brand-mark" aria-hidden="true">AR</span>
+        <span>Akimov Research Group<small>University at Buffalo</small></span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">Menu</button>
+      <nav class="site-nav" id="site-navigation" aria-label="Primary navigation">
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="research.html">Research</a>
+        <a href="publications.html">Publications</a>
+        <a href="group.html">People</a>
+        <a href="group_alumni.html">Alumni</a>
+        <a href="soft_and_tuts.html">Software</a>
+        <a href="teaching.html">Teaching</a>
+        <a href="outreach.html">Outreach</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
 
-  <head>
-    <title>The Akimov Research Group: Home page</title>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119266503-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-119266503-1');
-    </script>
-
-  </head>
-
-  <body>
-    <!-- Navigation bar  style="margin-top:-2px;" -->
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
-      <ul class="navbar-nav">
-        <li class="nav-item active"><a class="nav-link" href="index.html">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="research.html">Research</a></li>
-        <li class="nav-item"><a class="nav-link" href="publications.html">Publications</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Group</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="group.html">Present</a>
-            <a class="dropdown-item" href="group_alumni.html">Former Members and Visitors</a>
+  <main id="main-content">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Theoretical and Computational Quantum Dynamics</p>
+          <h1>Following energy and charge as matter evolves.</h1>
+          <p class="hero-copy">
+            We develop quantum and quantum-classical theories, open-source software,
+            and conduct atomistic simulations to understand nonadiabatic processes in
+            molecules, nanomaterials, and energy materials.
+          </p>
+          <div class="actions">
+            <a class="button button-primary" href="research.html">Explore our research</a>
+            <a class="button button-secondary" href="group.html">Meet the group</a>
           </div>
-        </li>        
-        <li class="nav-item"><a class="nav-link" href="teaching.html">Teaching</a></li>
-        <li class="nav-item"><a class="nav-link" href="outreach.html">Outreach</a></li>
-        <li class="nav-item"><a class="nav-link" href="soft_and_tuts.html">Software &amp; Tutorials</a></li>
-        <li class="nav-item"><a class="nav-link" href="gallery.html">Gallery</a></li>
-        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-        <li><a href="https://twitter.com/AkimovLab" class="twitter-follow-button" data-show-count="false" data-lang="en-gb">Follow @AkimovLab</a>
-          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
-            if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';
-            fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-        </li>
-      </ul>
-    </nav>
-    <!-- Title -->
-    <div class="row">
-      <div class="col-12"> <img src="images/Logo7.png" class="img-responsive" width="100%"></div>
+        </div>
+        <aside class="hero-panel" aria-label="Group focus">
+          <h2>At a glance</h2>
+          <div class="hero-stat">
+            <strong>Quantum dynamics</strong>
+            <span>New theory, benchmarks, and practical simulation methods</span>
+          </div>
+          <div class="hero-stat">
+            <strong>Open software</strong>
+            <span>Libra and community tools for nonadiabatic molecular dynamics</span>
+          </div>
+          <div class="hero-stat">
+            <strong>Energy materials</strong>
+            <span>Charge, exciton, spin, and vibrational relaxation processes</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-shell">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">What we investigate</p>
+            <h2>From fundamental dynamics to predictive materials modeling</h2>
+          </div>
+          <p>
+            Our work connects formal theory, efficient computational methodology,
+            and applications where electronic and nuclear motion cannot be separated.
+          </p>
+        </div>
+        <div class="card-grid">
+          <article class="card">
+            <img class="card-image" src="images/research2.png" alt="Schematic ladder comparing quantum dynamics methodologies">
+            <span class="card-number">01</span>
+            <h3>Theory and assessment</h3>
+            <p>We develop and benchmark quantum-classical approaches, studying coherence, correlations, representation invariance, and the limits of common approximations.</p>
+            <a class="text-link" href="research.html">Read about theory</a>
+          </article>
+          <article class="card">
+            <img class="card-image" src="images/research3.png" alt="Computational workflow for nonadiabatic molecular dynamics">
+            <span class="card-number">02</span>
+            <h3>Methods and software</h3>
+            <p>We create scalable algorithms and open implementations for nonadiabatic dynamics, state tracking, machine learning, and electronic-structure workflows.</p>
+            <a class="text-link" href="soft_and_tuts.html">Explore software</a>
+          </article>
+          <article class="card">
+            <img class="card-image" src="images/research1.png" alt="Examples of materials studied with nonadiabatic dynamics">
+            <span class="card-number">03</span>
+            <h3>Excited-state materials</h3>
+            <p>We model charge and energy transfer in quantum dots, two-dimensional materials, interfaces, perovskites, fullerenes, and molecular systems.</p>
+            <a class="text-link" href="research.html">See applications</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="section-shell feature-grid">
+        <div class="feature-visual" role="img" aria-label="Abstract visualization of a quantum dynamics simulation">
+          <span>Open-source science</span>
+        </div>
+        <div>
+          <p class="eyebrow">Featured software</p>
+          <h2>Libra: a modular library for quantum dynamics</h2>
+          <p>
+            Libra brings together model Hamiltonians, electronic-structure interfaces,
+            nonadiabatic molecular dynamics, trajectory surface hopping, decoherence,
+            and data-analysis tools in an open development environment.
+          </p>
+          <p>
+            The project supports both methodological research and reproducible
+            simulations of realistic molecular and materials systems.
+          </p>
+          <div class="actions">
+            <a class="button button-primary" style="background:#005bbb;color:#fff" href="https://quantum-dynamics-hub.github.io/libra/index.html">Libra documentation</a>
+            <a class="text-link" href="https://github.com/Quantum-Dynamics-Hub/libra-code">View on GitHub</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-shell">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Recent work</p>
+            <h2>Selected publications</h2>
+          </div>
+          <p>Recent advances in benchmarking nonadiabatic methods and understanding relaxation in dense excited-state manifolds.</p>
+        </div>
+        <div class="publications-list">
+          <article class="publication">
+            <div class="publication-year">2026</div>
+            <div>
+              <h3><a href="https://doi.org/10.1063/5.0314503">Assessment of trajectory surface hopping methods in long-time nonadiabatic dynamics</a></h3>
+              <p>Shakiba, Han, Mukherjee, and Akimov · <em>Journal of Chemical Physics</em> 164, 104110</p>
+            </div>
+          </article>
+          <article class="publication">
+            <div class="publication-year">2026</div>
+            <div>
+              <h3><a href="https://doi.org/10.1021/acs.jpclett.6c00006">Electronic Shannon Entropy as an Effective Descriptor of Nonradiative Dynamics in Dense Manifolds of Excited States</a></h3>
+              <p>Yasin, Shakiba, and Akimov · <em>Journal of Physical Chemistry Letters</em> 17, 2812–2822</p>
+            </div>
+          </article>
+          <article class="publication">
+            <div class="publication-year">2025</div>
+            <div>
+              <h3><a href="https://doi.org/10.1021/acs.jctc.5c01635">Toward Community-Driven Benchmarking and Ranking of Nonadiabatic Dynamics Methodologies</a></h3>
+              <p>Akimov · <em>Journal of Chemical Theory and Computation</em> 21, 11821–11846</p>
+            </div>
+          </article>
+        </div>
+        <div class="actions">
+          <a class="text-link" href="publications.html">Browse all publications</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-shell join-panel">
+        <div>
+          <p class="eyebrow">Join the group</p>
+          <h2>Build theory, software, and scientific insight with us.</h2>
+          <p>
+            We welcome motivated students interested in chemistry, physics,
+            mathematics, scientific computing, and materials science. Programming
+            experience is helpful, but curiosity and readiness to learn matter most.
+          </p>
+          <a class="button button-primary" href="contact.html">Contact the group</a>
+        </div>
+        <div class="join-options">
+          <div class="join-option"><strong>Graduate students</strong><span>Thesis research in theory, computation, and applications</span></div>
+          <div class="join-option"><strong>Undergraduates</strong><span>Research-for-credit and independent project opportunities</span></div>
+          <div class="join-option"><strong>Visiting scholars</strong><span>Collaborative and self-supported research visits</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-identity">
+        <a class="ub-lockup" href="https://www.buffalo.edu/" aria-label="University at Buffalo">
+          <img src="images/ub-master-lockup.png" alt="University at Buffalo">
+        </a>
+        <div>
+          <strong>Akimov Research Group</strong><br>
+          Theoretical and Computational Quantum Dynamics<br>
+          Department of Chemistry · Buffalo, New York 14260, USA
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="contact.html">Contact</a>
+        <a href="https://github.com/AkimovLab">GitHub</a>
+        <a href="https://scholar.google.com/citations?user=ntSw8_cAAAAJ">Google Scholar</a>
+      </div>
     </div>
+    <div class="ai-credit">Site design and modernization developed with assistance from OpenAI Codex, an AI coding agent; scientific content maintained by the Akimov Research Group.</div>
+  </footer>
 
-
-  <xmp theme="bootstrap-responsive"></xmp>
-
-    <div class="container" style="width:100%">
-      <br><br>
-      <h1><b>Welcome to the Akimov Research Group!</b></h1><br>
-    </div>
-
-    <!-- Content   -->
-    <div class="container" style="width:100%">
-
-      <div class="row">
-        <div class="col-9">
-  
-        <h2>About</h2>            
-        <p>
-          We are a theory &amp; computations group at SUNY, Buffalo. The research in our group revolves
-          around the following main themes:
-        </p>
-  
-        <ol>
-          <li>
-            <span style="font-weight: bold; color: #000099;">Theory of quantum and quantum-classical dynamics.</span>
-            We work to understand fundamental questions pertinent to quantum and quantum-classical dynamics (both adiabatic and non-adiabatic).
-            We focuses on investigation and development of quantum-classical theories for modeling non-equilibrium charge and energy transfer.
-            Some of the specific directions include: 
-            <ul>
-              <li>
-                Non-local quantum effects in entangled trajectories description of quantum-classical dynamics
-              </li>
-              <li>
-                Representation invariance of approximate quantum-classical methods
-              </li>
-              <li>
-                Quantum coherence, entanglement, and correlation
-              </li>
-            </ul>
-          </li>	
-          <br>
-    
-          <li>
-            <span style="font-weight: bold; color: #000099;">Methodology development and implementation.</span>
-            One of the group's goals is to deliver efficient and accurate implementations of the open-source sofwtware for chemical research. 
-            The main speciality of the codes we develop is in nonadiabatic dynamics, which is pertinent to many processes such as charge transfer,
-            electronic or vibrational energy relaxation, and photoinduced processes in molecular and solid-state systems. 
-            A bit more specific areas of interest are:
-            <ul>
-              <li>
-                Charge and energy transfer in large-scale systems
-              </li>
-              <li>
-                New methods for accelerating nonadiabatic molecular dynamics
-              </li>
-              <li>
-                New approaches to photoinduced reactive dynamics in excited states
-              </li>
-              <li>
-                Software development for nonadiabatic molecular dynamics simulations
-              </li>
-            </ul>
-          </li>
-          <br>
-          <li>
-            <span style="font-weight: bold; color: #000099;">Studies of excited state dynamics in energy materials</span>
-            Naturally, we are interested applying the methods and tools we develop to study the real-time charge and energy 
-            transfer processes in contemporary materials. These are the materials that are at the cutting edge of experimental
-            research and have high potential to impact the society by enabling new technologies or notably improving the existing
-            ones. With our approaches, we explore the details of the underlying processes that affect the properties of these systems.
-            Some of the materials or systems that we are interested include:					
-            <ul>
-              <li>
-                2D materials and their interfaces for photovoltaic and photocatalytic applications
-              </li>
-              <li>
-                Perovskites and chalcogenide perovskites
-              </li>
-              <li>
-                Quantum dots and their assemblies
-              </li>	
-              <li>
-                Light-emitting systems and materials for molecular electronics
-              </li>
-              <li>
-                Exotic states of matter: Warm dense matter
-              </li>
-            </ul>
-          </li>
-          <br>
-        </ol>			
-        <p>
-          For more details and description, please visit the <a href="research.html">Research</a> page.
-        </p>
-        <br><br>
-  
-        </div> <!-- class="col-9" -->
-
-
-        
-        <div class="col-3">
-          <h2>Group News</h2>
-          <iframe src="news/news.html" name="frame_res" width="99%" height="500px"></iframe>
-
-          <h2>
-            <ul class="navbar-nav">
-              <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">News Archive</a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="news/archive_2018-2019.html">2018-2019</a>
-                <a class="dropdown-item" href="news/archive_2017.html">2017</a>
-                <a class="dropdown-item" href="news/archive_2016.html">2016</a>
-                <a class="dropdown-item" href="news/archive_2015.html">2015</a>
-              </div>
-            </ul>
-          </h2>
-
-        </div> <!-- class="col-3" -->
-
-      </div> <!-- class="row" -->
-
-
-      <h2>Join the Group</h2>
-
-      <div class="row"> <!-- class="row" -->
-        <div class="col-4">      
-          <span style="font-weight: bold; color: green;">Graduate student openings:</span><br>           
-          <span style="text-decoration: underline;">Status:</span> At this point, there are opportunities for several 
-          graduate students to start their thesis work with me.
-          <br><br>
-          <span style="text-decoration: underline;">Qualifications:</span> There is no specific qualification requirement
-          apart from your good self-motivation, readiness and willingness to learn new techniques and good organizational 
-          skills. Good math and programming preparation is a plus. Students inclined toward mathematical, physical, and 
-          computer sciences are encouraged to apply.
-          <br><br>
-          <span style="text-decoration: underline;">Procedures:</span> If you are interested in joining the group or
-          just curious about the research going on in the group, feel free to contact me via email, or stop by my office (NSC 716).
-          Please keep in mind that you must be officially enrolled in graduate program at the University, before you can join
-          the group officially. Nonetheless, the initial contact with the PI is always encouraged.
-          <br><br>
-        </div>
-
-        <div class="col-4">
-          <span style="font-weight: bold; color: blue;">Undergraduate student openings: </span><br>
-          <span style="text-decoration: underline;">Status:</span> We always welcome motivated and hard-working undergraduate 
-          students to try themselves in the computational chemistry research!
-          <br>
-          <p>
-            Computational chemistry. Haven't heard or never learned anything like that before? No problem!
-          </p>
-          <p>
-            This is your chance to learn new skills and check it out for yourself if you may like to pursue it in the 
-            graduate school or even further in your career.
-          </p>
-          <p>
-            In addition, that's a great way to improve your CV and obtain a recommendation letter for your future application
-            to the graduate school.
-          </p>
-          <p>
-            Our lab can become your home for the undergraduate research class (take it for credit). And, best of all, 
-            this could be a great chance for your to get your first publication, even before you go to the graduate school. 
-            Check out <a href="http://pubs.acs.org/doi/abs/10.1021/acs.jpca.6b09660" target="_new" rel="nofollow">this paper</a>
-            by the former undergraduate student, Yuhan Lin.
-          </p>
-          <span style="text-decoration: underline;">Qualifications &amp; Procedures:</span> Same as for graduate students. 
-          <br><br>
-        </div>
-
-        <div class="col-4">
-          <span style="font-weight: bold; color: red;">Postdoctoral position openings:</span>
-          <span style="text-decoration: underline;"><br> Status:</span>&nbsp; At this point, no postdoctoral positions are open.
-          <br><br><br>
-          <span style="font-weight: bold; color: green;">Self-supported scholars:</span><br>
-          <span style="text-decoration: underline;">Status:</span> We always welcome applicants with their own funding.
-          If you are interested in a joint Ph.D. between your institution and UB, if you apply for a scholarship and
-          is looking for a host institution, or if you are interested in visiting our group to learn new techniques,
-          please don't hesitate to contact me via email.
-          <br><br>
-        </div>
-
-        </div>  
-
-
-      </div> <!-- class="row" -->
-
-    </div> <!--  Container-fluid --> 
-
-  </body>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="styles.css">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-
-    <script type="text/javascript" src="https://cdn.rawgit.com/Naereen/StrapDown.js/master/strapdown.min.js"></script>
-
+  <script src="scripts/site-shell.js"></script>
+</body>
 </html>
