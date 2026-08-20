@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "_site"
-EXCLUDED_DIRECTORIES = {".git", "_site", "__pycache__"}
+EXCLUDED_DIRECTORIES = {".git", ".github", "_site", "__pycache__"}
 EXCLUDED_FILES = {".DS_Store"}
 
 
